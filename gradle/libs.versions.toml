@@ -1,0 +1,63 @@
+[versions]
+kotlin-all = "1.5.31"
+kotlin-extensions = "1.1.4"
+kotlinx-coroutines = "1.5.1"
+
+spring-framework = "2.5.6"
+netty-server = "4.1.67.Final"
+abac = "1.0.0"
+
+r2dbc-dsl = "4.0.1"
+r2dbc-postgres = "0.8.10.RELEASE"
+jdbc-postgres = "42.2.23"
+
+feign-client = "3.1.1"
+feign-slf4j = "8.18.0"
+logback = "1.2.3"
+
+liquibase = "4.4.3"
+openapi = "1.5.10"
+snake-yaml = "1.29"
+
+test-junit = "4.13.2"
+test-reactor = "3.4.9"
+
+[libraries]
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-all" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin-all" }
+kotlin-extensions = { module = "io.projectreactor.kotlin:reactor-kotlin-extensions", version.ref = "kotlin-extensions" }
+kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "kotlinx-coroutines" }
+
+webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "spring-framework" }
+netty-codec = { module = "io.netty:netty-codec-http", version.ref = "netty-server" }
+transport = { module = "io.netty:netty-transport-native-epoll", version.ref = "netty-server" }
+abac-security = { module = "io.github.sevenparadigms:reactive-spring-abac-security", version.ref = "abac"}
+
+reactor-dsl = { module = "io.github.sevenparadigms:spring-data-r2dbc-dsl", version.ref = "r2dbc-dsl"}
+postgresql = { module = "io.r2dbc:r2dbc-postgresql", version.ref = "r2dbc-postgres"}
+postgres-jdbc = { module = "org.postgresql:postgresql", version.ref = "jdbc-postgres"}
+
+reactor-swagger = { module = "org.springdoc:springdoc-openapi-webflux-ui", version.ref = "openapi" }
+openapi = { module = "org.springdoc:springdoc-openapi-kotlin", version.ref = "openapi" }
+swagger-annotations = { module = "io.swagger.core.v3:swagger-annotations", version = "2.1.10" }
+
+spring-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-framework"}
+junit = { module = "junit:junit", version.ref = "test-junit"}
+reactor-test = { module = "io.projectreactor:reactor-test", version.ref = "test-reactor" }
+
+feign-webclient = { module = "com.playtika.reactivefeign:feign-reactor-webclient", version.ref = "feign-client" }
+feign-cloud = { module = "com.playtika.reactivefeign:feign-reactor-cloud", version.ref = "feign-client" }
+feign-spring = { module = "com.playtika.reactivefeign:feign-reactor-spring-configuration", version.ref = "feign-client" }
+feign-slf4j = { module = "com.netflix.feign:feign-slf4j", version.ref = "feign-slf4j" }
+
+liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase" }
+logback-core = { module = "ch.qos.logback:logback-core", version.ref = "logback" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+liquibase-yaml = { module = "org.yaml:snakeyaml", version.ref = "snake-yaml"}
+
+[bundles]
+kotlin = [ "kotlin-reflect", "kotlin-stdlib", "kotlin-extensions", "kotlin-coroutines" ]
+service = [ "webflux", "netty-codec", "abac-security", "reactor-dsl", "reactor-swagger", "openapi", "swagger-annotations" ]
+feign = [ "feign-webclient", "feign-cloud", "feign-spring", "feign-slf4j" ]
+liquibase = [ "liquibase-core", "logback-core", "logback-classic", "postgres-jdbc", "liquibase-yaml" ]
+test = [ "spring-test", "junit", "reactor-test"]
