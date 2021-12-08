@@ -2,7 +2,6 @@ package io.github.sevenparadigms.dslabac.api
 
 import com.fasterxml.jackson.databind.JsonNode
 import io.github.sevenparadigms.dslabac.data.Jobject
-import io.github.sevenparadigms.dslabac.dto.JobjectDto
 import org.springframework.data.r2dbc.repository.query.Dsl
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -18,10 +17,10 @@ import java.util.*
 interface ObjectApi {
     @PreAuthorize("hasPermission(#dsl, 'findAll')")
     @GetMapping(value = ["{jfolderId}"])
-    fun findAll(@PathVariable jfolderId: UUID, dsl: Dsl): Flux<JobjectDto>
+    fun findAll(@PathVariable jfolderId: UUID, dsl: Dsl): Flux<Jobject>
 
-    @PostMapping
-    fun save(@RequestBody jobject: JobjectDto): Mono<Jobject>
+    @PostMapping(value = ["{jfolderId}"])
+    fun save(@PathVariable jfolderId: UUID, @RequestBody jobject: Jobject): Mono<Jobject>
 
     @DeleteMapping
     fun delete(@RequestParam id: UUID): Mono<ServerResponse>

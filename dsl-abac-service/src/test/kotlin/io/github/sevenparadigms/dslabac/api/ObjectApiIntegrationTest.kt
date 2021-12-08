@@ -2,15 +2,16 @@ package io.github.sevenparadigms.dslabac.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.sevenparadigms.abac.security.auth.data.UserPrincipal
-import io.github.sevenparadigms.dslabac.data.Jfolder
+import io.github.sevenparadigms.dslabac.data.FolderRepository
 import io.github.sevenparadigms.dslabac.data.Jobject
-import io.github.sevenparadigms.dslabac.dto.JobjectDto
+import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.runBlocking
 import org.junit.FixMethodOrder
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.runners.MethodSorters
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
@@ -31,11 +32,14 @@ class ObjectApiIntegrationTest {
     @LocalServerPort
     private var port = 0
     private var jobjectId: UUID? = null
+    private var jfolderId: UUID? = null
     private val correctIp = "192.168.2.207"
     private val nonCorrectIp = "127.0.0.1"
     private val testUsersPassword =
         "+vlAkdr5kgSo1jbsCx/Moxg19SabHuiNo1eMw58GwGW4cDNrSgfudpi9xTyHH8iYDFMb54uWNjYwIglfY5OYMQJWxebjSG2wY2XF+EIp7/oTsWYEYrWycPiD"
 
+    @Autowired
+    private lateinit var folderRepository: FolderRepository
     private lateinit var objectMapper: ObjectMapper
     private lateinit var webClient: WebClient
     private lateinit var adminToken: String
@@ -52,20 +56,20 @@ class ObjectApiIntegrationTest {
                 .baseUrl("http://$host:$port/").build()
             adminToken = getToken("admin")
             userToken = getToken("user")
+            jfolderId = folderRepository.findFolderIdByJtreeName("organization").awaitFirst()
         }
     }
 
     @Test
     fun aSave() {
-        val jobject = JobjectDto(
-            jtree = objectMapper.readTree("{\"name\": \"Testin123g\", \"description\": \"Testing\"}"),
-            jfolder = Jfolder(jtree = objectMapper.readTree("{\"name\": \"Organization\"}"))
+        val jobject = Jobject(
+            jtree = objectMapper.readTree("{\"name\": \"Testin123g\", \"description\": \"Testing\"}")
         )
 
         val saveResponse = webClient.post()
-            .uri("dsl-abac")
+            .uri("dsl-abac/$jfolderId")
             .header("Authorization", "Bearer $adminToken")
-            .body(BodyInserters.fromPublisher(Mono.just(jobject), JobjectDto::class.java))
+            .body(BodyInserters.fromPublisher(Mono.just(jobject), Jobject::class.java))
             .retrieve()
             .bodyToMono(Jobject::class.java)
             .doOnNext { jobjectId = it.id }
@@ -79,7 +83,7 @@ class ObjectApiIntegrationTest {
     @Test
     fun bFindAll_whenPermissionsIsAdminOk() {
         val flux = webClient.get()
-            .uri("dsl-abac/$jobjectId?sort=id:desc")
+            .uri("dsl-abac/$jfolderId?sort=id:desc")
             .header("Authorization", "Bearer $adminToken")
             .retrieve()
             .bodyToFlux(Jobject::class.java)
@@ -87,13 +91,14 @@ class ObjectApiIntegrationTest {
         StepVerifier.create(flux)
             .expectSubscription()
             .expectNextMatches { it != null }
-            .verifyComplete()
+            .thenCancel()
+            .verify()
     }
 
     @Test
     fun cFindAll_whenPermissionsIsIpOk() {
         val flux = webClient.get()
-            .uri("dsl-abac/$jobjectId?sort=id:desc")
+            .uri("dsl-abac/$jfolderId?sort=id:desc")
             .header("Authorization", "Bearer $userToken")
             .header("X-Forwarded-For", correctIp)
             .retrieve()
@@ -102,7 +107,8 @@ class ObjectApiIntegrationTest {
         StepVerifier.create(flux)
             .expectSubscription()
             .expectNextMatches { it != null }
-            .verifyComplete()
+            .thenCancel()
+            .verify()
     }
 
     @Test
