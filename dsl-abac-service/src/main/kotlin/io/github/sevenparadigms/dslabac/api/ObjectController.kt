@@ -1,7 +1,7 @@
 package io.github.sevenparadigms.dslabac.api
 
 import com.fasterxml.jackson.databind.JsonNode
-import io.github.sevenparadigms.dslabac.data.Jobject
+import io.github.sevenparadigms.dslabac.dto.JobjectDto
 import io.github.sevenparadigms.dslabac.service.ObjectService
 import org.springframework.data.r2dbc.repository.query.Dsl
 import org.springframework.web.bind.annotation.PathVariable
@@ -15,7 +15,7 @@ import java.util.*
 @RestController
 class ObjectController(val objectService: ObjectService) : ObjectApi {
     override fun findAll(@PathVariable jfolderId: UUID, dsl: Dsl) = objectService.findAll(dsl)
-    override fun save(@RequestBody jobject: Jobject) = objectService.save(jobject)
+    override fun save(@RequestBody jobject: JobjectDto) = objectService.save(jobject)
     override fun delete(@RequestParam id: UUID) = objectService.delete(id).then(ServerResponse.ok().build())
     override fun listener(): Flux<JsonNode> = objectService.listener()
 }
