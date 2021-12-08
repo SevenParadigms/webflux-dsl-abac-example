@@ -9,6 +9,5 @@ import java.util.*
 data class Jfolder(
     @Id
     val id: UUID? = null,
-    val jtree: JsonNode,
-
+    val jtree: JsonNode
 )
