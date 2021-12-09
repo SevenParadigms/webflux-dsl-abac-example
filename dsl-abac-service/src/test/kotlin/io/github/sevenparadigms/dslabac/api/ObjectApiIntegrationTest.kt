@@ -1,65 +1,19 @@
 package io.github.sevenparadigms.dslabac.api
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.sevenparadigms.abac.Constants
-import io.github.sevenparadigms.abac.security.auth.data.UserPrincipal
-import io.github.sevenparadigms.dslabac.data.FolderRepository
+import io.github.sevenparadigms.dslabac.AbstractIntegrationTest
 import io.github.sevenparadigms.dslabac.data.Jobject
-import kotlinx.coroutines.reactive.awaitFirst
-import kotlinx.coroutines.runBlocking
 import org.junit.FixMethodOrder
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.junit.runners.MethodSorters
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpHeaders
-import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.BodyInserters
-import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import org.springframework.web.reactive.function.client.awaitBody
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
-import java.net.NetworkInterface
-import java.util.*
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ObjectApiIntegrationTest {
-
-    @LocalServerPort
-    private var port = 0
-    private var jobjectId: UUID? = null
-    private var jfolderId: UUID? = null
-    private val correctIp = "192.168.2.207"
-    private val nonCorrectIp = "127.0.0.1"
-    private val testUsersPassword = "passwore"
-
-    @Autowired
-    private lateinit var folderRepository: FolderRepository
-    private lateinit var objectMapper: ObjectMapper
-    private lateinit var webClient: WebClient
-    private lateinit var adminToken: String
-    private lateinit var userToken: String
-    private lateinit var host: String
-
-    @BeforeAll
-    fun setup() {
-        runBlocking {
-            objectMapper = ObjectMapper()
-            host = NetworkInterface.getNetworkInterfaces().asIterator().next().inetAddresses.asIterator()
-                .next().hostAddress
-            webClient = WebClient.builder().clientConnector(ReactorClientHttpConnector())
-                .baseUrl("http://$host:$port/").build()
-            adminToken = getToken("admin")
-            userToken = getToken("user")
-            jfolderId = folderRepository.findFolderIdByJtreeName("organization").awaitFirst()
-        }
-    }
+class ObjectApiIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun aSave() {
@@ -138,20 +92,5 @@ class ObjectApiIntegrationTest {
             .expectSubscription()
             .expectNextMatches { it.statusCodeValue == 200 }
             .verifyComplete()
-    }
-
-    private suspend fun getToken(login: String): String {
-        return webClient.post()
-            .uri("auth")
-            .body(BodyInserters.fromPublisher(Mono.just(createUser(login)), UserPrincipal::class.java))
-            .retrieve()
-            .awaitBody()
-    }
-
-    private fun createUser(login: String): UserPrincipal {
-        return UserPrincipal(
-            login = login,
-            password = testUsersPassword
-        )
     }
 }

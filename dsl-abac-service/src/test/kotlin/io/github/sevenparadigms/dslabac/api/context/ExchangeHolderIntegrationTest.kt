@@ -3,11 +3,13 @@ package io.github.sevenparadigms.dslabac.api.context
 import io.github.sevenparadigms.abac.Constants
 import io.github.sevenparadigms.dslabac.AbstractIntegrationTest
 import io.github.sevenparadigms.dslabac.data.Jobject
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
 import reactor.test.StepVerifier
 
-class ExchangeContextIntegrationTest : AbstractIntegrationTest() {
+@Disabled
+class ExchangeHolderIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun getRemoteIp() {
@@ -123,4 +125,5 @@ class ExchangeContextIntegrationTest : AbstractIntegrationTest() {
             .thenCancel()
             .verify()
     }
+
 }
