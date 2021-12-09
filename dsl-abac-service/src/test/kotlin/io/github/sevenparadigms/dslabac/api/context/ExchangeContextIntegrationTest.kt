@@ -1,8 +1,8 @@
-package io.github.sevenparadigms.dslabac.api
+package io.github.sevenparadigms.dslabac.api.context
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.sevenparadigms.abac.Constants
 import io.github.sevenparadigms.abac.security.auth.data.UserPrincipal
+import io.github.sevenparadigms.abac.security.context.ExchangeContext
 import io.github.sevenparadigms.dslabac.data.FolderRepository
 import io.github.sevenparadigms.dslabac.data.Jobject
 import kotlinx.coroutines.reactive.awaitFirst
@@ -19,7 +19,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.awaitBody
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
@@ -29,115 +28,149 @@ import java.util.*
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ObjectApiIntegrationTest {
+class ExchangeContextIntegrationTest {
 
     @LocalServerPort
     private var port = 0
-    private var jobjectId: UUID? = null
-    private var jfolderId: UUID? = null
     private val correctIp = "192.168.2.207"
-    private val nonCorrectIp = "127.0.0.1"
     private val testUsersPassword = "passwore"
+    private var jfolderId: UUID? = null
 
     @Autowired
     private lateinit var folderRepository: FolderRepository
-    private lateinit var objectMapper: ObjectMapper
+
+    @Autowired
+    private lateinit var exchangeContext: ExchangeContext
+
     private lateinit var webClient: WebClient
     private lateinit var adminToken: String
-    private lateinit var userToken: String
     private lateinit var host: String
 
     @BeforeAll
     fun setup() {
         runBlocking {
-            objectMapper = ObjectMapper()
             host = NetworkInterface.getNetworkInterfaces().asIterator().next().inetAddresses.asIterator()
                 .next().hostAddress
             webClient = WebClient.builder().clientConnector(ReactorClientHttpConnector())
                 .baseUrl("http://$host:$port/").build()
             adminToken = getToken("admin")
-            userToken = getToken("user")
             jfolderId = folderRepository.findFolderIdByJtreeName("organization").awaitFirst()
         }
     }
 
     @Test
-    fun aSave() {
-        val jobject = Jobject(
-            jtree = objectMapper.readTree("{\"name\": \"Testin123g\", \"description\": \"Testing\"}")
-        )
-
-        val saveResponse = webClient.post()
-            .uri("dsl-abac/$jfolderId")
-            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
-            .body(BodyInserters.fromPublisher(Mono.just(jobject), Jobject::class.java))
-            .retrieve()
-            .bodyToMono(Jobject::class.java)
-            .doOnNext { jobjectId = it.id }
-
-        StepVerifier.create(saveResponse)
-            .expectSubscription()
-            .expectNextMatches { it != null }
-            .verifyComplete()
-    }
-
-    @Test
-    fun bFindAll_whenPermissionsIsAdminOk() {
+    fun getRemoteIp() {
         val flux = webClient.get()
             .uri("dsl-abac/$jfolderId?sort=id:desc")
             .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
-            .retrieve()
-            .bodyToFlux(Jobject::class.java)
-
-        StepVerifier.create(flux)
-            .expectSubscription()
-            .expectNextMatches { it != null }
-            .thenCancel()
-            .verify()
-    }
-
-    @Test
-    fun cFindAll_whenPermissionsIsIpOk() {
-        val flux = webClient.get()
-            .uri("dsl-abac/$jfolderId?sort=id:desc")
-            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + userToken)
             .header(Constants.AUTHORIZE_IP, correctIp)
             .retrieve()
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
             .expectSubscription()
-            .expectNextMatches { it != null }
+            .expectNextMatches { exchangeContext.getRemoteIp("admin") == correctIp }
             .thenCancel()
             .verify()
     }
 
     @Test
-    fun dFindAll_whenPermissionsIsNotOk() {
-        val entity = webClient.get()
-            .uri("dsl-abac/$jobjectId?sort=id:desc")
-            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + userToken)
-            .header(Constants.AUTHORIZE_IP, nonCorrectIp)
+    fun getHeaders() {
+        val flux = webClient.get()
+            .uri("dsl-abac/$jfolderId?sort=id:desc")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .header(Constants.AUTHORIZE_IP, correctIp)
             .retrieve()
-            .toBodilessEntity()
+            .bodyToFlux(Jobject::class.java)
 
-        StepVerifier.create(entity)
+        StepVerifier.create(flux)
             .expectSubscription()
-            .verifyError(WebClientResponseException::class.java)
+            .expectNextMatches {
+                exchangeContext.getHeaders("admin")!![Constants.AUTHORIZE_IP]!!.first() == correctIp &&
+                        exchangeContext.getHeaders("admin")!![HttpHeaders.AUTHORIZATION]!!.first() == Constants.BEARER + adminToken
+            }
+            .thenCancel()
+            .verify()
     }
 
     @Test
-    fun eDelete() {
-        val deleteResponse = webClient.delete()
-            .uri("dsl-abac?id=$jobjectId")
-            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + userToken)
+    fun getRequest() {
+        val flux = webClient.get()
+            .uri("dsl-abac/$jfolderId?sort=id:desc")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .header(Constants.AUTHORIZE_IP, correctIp)
             .retrieve()
-            .toBodilessEntity()
+            .bodyToFlux(Jobject::class.java)
 
-        StepVerifier.create(deleteResponse)
+        StepVerifier.create(flux)
             .expectSubscription()
-            .expectNextMatches { it.statusCodeValue == 200 }
-            .verifyComplete()
+            .expectNextMatches { exchangeContext.getRequest("admin") != null }
+            .thenCancel()
+            .verify()
+    }
+
+    @Test
+    fun getResponse() {
+        val flux = webClient.get()
+            .uri("dsl-abac/$jfolderId?sort=id:desc")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .header(Constants.AUTHORIZE_IP, correctIp)
+            .retrieve()
+            .bodyToFlux(Jobject::class.java)
+
+        StepVerifier.create(flux)
+            .expectSubscription()
+            .expectNextMatches { exchangeContext.getResponse("admin") != null }
+            .thenCancel()
+            .verify()
+    }
+
+    @Test
+    fun getSession() {
+        val flux = webClient.get()
+            .uri("dsl-abac/$jfolderId?sort=id:desc")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .header(Constants.AUTHORIZE_IP, correctIp)
+            .retrieve()
+            .bodyToFlux(Jobject::class.java)
+
+        StepVerifier.create(flux)
+            .expectSubscription()
+            .expectNextMatches { exchangeContext.getSession("admin") != null }
+            .thenCancel()
+            .verify()
+    }
+
+    @Test
+    fun getToken() {
+        val flux = webClient.get()
+            .uri("dsl-abac/$jfolderId?sort=id:desc")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .header(Constants.AUTHORIZE_IP, correctIp)
+            .retrieve()
+            .bodyToFlux(Jobject::class.java)
+
+        StepVerifier.create(flux)
+            .expectSubscription()
+            .expectNextMatches { exchangeContext.getToken("admin") == adminToken }
+            .thenCancel()
+            .verify()
+    }
+
+    @Test
+    fun getUser() {
+        val flux = webClient.get()
+            .uri("dsl-abac/$jfolderId?sort=id:desc")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .header(Constants.AUTHORIZE_IP, correctIp)
+            .retrieve()
+            .bodyToFlux(Jobject::class.java)
+
+        StepVerifier.create(flux)
+            .expectSubscription()
+            .expectNextMatches { exchangeContext.getUser("admin") != null }
+            .thenCancel()
+            .verify()
     }
 
     private suspend fun getToken(login: String): String {
