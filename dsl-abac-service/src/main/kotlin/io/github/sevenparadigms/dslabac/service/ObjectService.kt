@@ -1,6 +1,7 @@
 package io.github.sevenparadigms.dslabac.service
 
 import com.fasterxml.jackson.databind.JsonNode
+import io.github.sevenparadigms.abac.security.context.ExchangeHolder
 import io.github.sevenparadigms.dslabac.data.Jobject
 import io.github.sevenparadigms.dslabac.data.ObjectRepository
 import org.sevenparadigms.kotlin.common.toJsonNode
@@ -29,4 +30,17 @@ class ObjectService(
     fun delete(id: UUID): Mono<Void> = objectRepository.deleteById(id)
 
     fun listener(): Flux<JsonNode> = objectRepository.listener().map { it.parameter!!.toJsonNode() }
+
+    fun context(): Flux<List<Any>> {
+        return Flux.zip(
+            ExchangeHolder.getHeaders(),
+            ExchangeHolder.getRemoteIp(),
+            ExchangeHolder.getRequest(),
+            ExchangeHolder.getToken(),
+            ExchangeHolder.getSession(),
+            ExchangeHolder.getResponse(),
+            ExchangeHolder.getUser()
+        )
+            .map { listOf(it.t1, it.t2, it.t3, it.t4, it.t5, it.t6, it.t7) }
+    }
 }

@@ -27,4 +27,7 @@ interface ObjectApi {
 
     @GetMapping("/listen", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     fun listener(): Flux<JsonNode>
+
+    @GetMapping("/context")
+    fun context(): Flux<List<Any>>
 }
