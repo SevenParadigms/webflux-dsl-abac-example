@@ -16,8 +16,8 @@ CREATE TABLE local_user
 );
 
 insert into local_user(login, password)
-values('admin', '+vlAkdr5kgSo1jbsCx/Moxg19SabHuiNo1eMw58GwGW4cDNrSgfudpi9xTyHH8iYDFMb54uWNjYwIglfY5OYMQJWxebjSG2wY2XF+EIp7/oTsWYEYrWycPiD'),
-      ('user', '+vlAkdr5kgSo1jbsCx/Moxg19SabHuiNo1eMw58GwGW4cDNrSgfudpi9xTyHH8iYDFMb54uWNjYwIglfY5OYMQJWxebjSG2wY2XF+EIp7/oTsWYEYrWycPiD');
+values('admin', 'b9y3FIltPBbk7rrP80Tav8CTHRBRfg=='),
+      ('user', 'b9y3FIltPBbk7rrP80Tav8CTHRBRfg==');
 
 CREATE FUNCTION getAuthority(p_name text) RETURNS uuid
     LANGUAGE plpgsql AS
@@ -64,4 +64,5 @@ CREATE TABLE abac_rule
 );
 
 insert into abac_rule(name, domain_type, target, condition)
-values('Test Rule', 'Dsl', 'action == ''findAll'' and subject.roles.contains(''ROLE_ADMIN'')', 'domainObject.sort == ''id:desc''');
+values('Test Rule', 'Dsl', 'action == ''findAll'' and subject.roles.contains(''ROLE_ADMIN'')', 'domainObject.sort == ''id:desc'''),
+      ('IP Rule', 'Dsl', 'action == ''findAll'' and environment.ip == ''192.168.2.207''', 'domainObject.sort == ''id:desc''');

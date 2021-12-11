@@ -18,4 +18,5 @@ class ObjectController(val objectService: ObjectService) : ObjectApi {
     override fun save(@RequestBody jobject: Jobject) = objectService.save(jobject)
     override fun delete(@RequestParam id: UUID) = objectService.delete(id).then(ServerResponse.ok().build())
     override fun listener(): Flux<JsonNode> = objectService.listener()
+    override fun context(): Flux<List<Any>> = objectService.context()
 }
