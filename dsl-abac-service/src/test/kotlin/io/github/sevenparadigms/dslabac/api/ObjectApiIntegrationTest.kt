@@ -18,11 +18,12 @@ class ObjectApiIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun aSave() {
         val jobject = Jobject(
+            jfolderId = jfolderId,
             jtree = objectMapper.readTree("{\"name\": \"Testin123g\", \"description\": \"Testing\"}")
         )
 
         val saveResponse = webClient.post()
-            .uri("dsl-abac/$jfolderId")
+            .uri("dsl-abac")
             .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
             .body(BodyInserters.fromPublisher(Mono.just(jobject), Jobject::class.java))
             .retrieve()

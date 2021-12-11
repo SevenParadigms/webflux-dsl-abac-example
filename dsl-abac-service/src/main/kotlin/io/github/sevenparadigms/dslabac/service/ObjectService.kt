@@ -22,7 +22,6 @@ class ObjectService(
 
     @Transactional
     fun save(jfolderId: UUID, jobject: Jobject): Mono<Jobject> {
-        jobject.jfolderId = jfolderId
         return objectRepository.save(jobject)
     }
 

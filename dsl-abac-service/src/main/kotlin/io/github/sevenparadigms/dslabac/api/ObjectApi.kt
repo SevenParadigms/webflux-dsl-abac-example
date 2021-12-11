@@ -19,8 +19,8 @@ interface ObjectApi {
     @GetMapping(value = ["{jfolderId}"])
     fun findAll(@PathVariable jfolderId: UUID, dsl: Dsl): Flux<Jobject>
 
-    @PostMapping(value = ["{jfolderId}"])
-    fun save(@PathVariable jfolderId: UUID, @RequestBody jobject: Jobject): Mono<Jobject>
+    @PostMapping
+    fun save(@RequestBody jobject: Jobject): Mono<Jobject>
 
     @DeleteMapping
     fun delete(@RequestParam id: UUID): Mono<ServerResponse>
