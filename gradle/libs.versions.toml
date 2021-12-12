@@ -1,13 +1,13 @@
 [versions]
-kotlin-all = "1.5.31"
+kotlin-all = "1.6.0"
 kotlin-extensions = "1.1.4"
 kotlinx-coroutines = "1.5.1"
 
-spring-framework = "2.5.6"
+spring-framework = "2.5.7"
 netty-server = "4.1.67.Final"
 abac = "1.0.0"
 
-r2dbc-dsl = "4.0.1"
+r2dbc-dsl = "4.4.4"
 r2dbc-postgres = "0.8.10.RELEASE"
 jdbc-postgres = "42.2.23"
 
@@ -15,7 +15,7 @@ feign-client = "3.1.1"
 feign-slf4j = "8.18.0"
 logback = "1.2.3"
 
-liquibase = "4.4.3"
+liquibase = "4.6.2"
 openapi = "1.5.10"
 snake-yaml = "1.29"
 

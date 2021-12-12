@@ -21,7 +21,7 @@ class ObjectService(
         objectRepository.findAll(dsl)
 
     @Transactional
-    fun save(jfolderId: UUID, jobject: Jobject): Mono<Jobject> {
+    fun save(jobject: Jobject): Mono<Jobject> {
         return objectRepository.save(jobject)
     }
 
