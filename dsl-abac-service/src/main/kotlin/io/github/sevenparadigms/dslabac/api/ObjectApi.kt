@@ -29,5 +29,5 @@ interface ObjectApi {
     fun listener(): Flux<JsonNode>
 
     @GetMapping("/context")
-    fun context(): Flux<List<Any>>
+    fun context(): Flux<Any>
 }

@@ -1,7 +1,7 @@
 [versions]
 kotlin-all = "1.6.0"
 kotlin-extensions = "1.1.4"
-kotlinx-coroutines = "1.5.1"
+kotlinx-coroutines = "1.5.2-native-mt"
 
 spring-framework = "2.5.7"
 netty-server = "4.1.67.Final"

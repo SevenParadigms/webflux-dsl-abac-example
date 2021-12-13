@@ -15,12 +15,12 @@ class ExchangeHolderIntegrationTest : AbstractIntegrationTest() {
             .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
             .header(Constants.AUTHORIZE_IP, correctIp)
             .exchangeToMono { it.bodyToMono(List::class.java) }
-            .map { it as List<List<Any>> }
+            .map { it as List<*> }
 
         StepVerifier.create(mono)
             .expectNextMatches {
-                it[0].stream().allMatch{ value -> value != null } &&
-                it[0][1] == correctIp && it[0][3] == adminToken
+                it.stream().allMatch{ value -> value != null } &&
+                it[1] == correctIp && it[3] == adminToken
             }
             .thenCancel()
             .verify()
