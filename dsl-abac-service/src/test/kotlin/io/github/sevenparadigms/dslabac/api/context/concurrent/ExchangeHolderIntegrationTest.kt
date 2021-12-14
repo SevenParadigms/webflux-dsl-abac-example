@@ -1,15 +1,9 @@
-package io.github.sevenparadigms.dslabac.api.context
+package io.github.sevenparadigms.dslabac.api.context.concurrent
 
 import io.github.sevenparadigms.abac.Constants
-import io.github.sevenparadigms.abac.security.auth.data.UserPrincipal
 import io.github.sevenparadigms.dslabac.AbstractIntegrationMultithreadingTest
-import kotlinx.coroutines.reactive.awaitLast
-import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
-import org.springframework.web.reactive.function.BodyInserters
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Schedulers
@@ -18,8 +12,6 @@ import java.time.Duration
 
 class ExchangeHolderIntegrationTest : AbstractIntegrationMultithreadingTest() {
 
-    private val countUsersForTest = 1000
-
     @Test
     fun testHolder() {
         val mono = webClient.get()
@@ -27,7 +19,6 @@ class ExchangeHolderIntegrationTest : AbstractIntegrationMultithreadingTest() {
             .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
             .header(Constants.AUTHORIZE_IP, correctIp)
             .exchangeToMono { it.bodyToMono(List::class.java) }
-            .map { it as List<*> }
 
         StepVerifier.create(mono)
             .expectNextMatches {
@@ -100,13 +91,7 @@ class ExchangeHolderIntegrationTest : AbstractIntegrationMultithreadingTest() {
             .delayElements(Duration.ofMillis(20))
             .parallel(10)
             .runOn(Schedulers.boundedElastic())
-            .flatMap {
-                webClient.post()
-                    .uri("auth")
-                    .body(BodyInserters.fromPublisher(Mono.just(createUser("test$it")), UserPrincipal::class.java))
-                    .exchangeToMono { resp -> resp.bodyToMono(String::class.java) }
-                    .zipWith(Mono.just(it))
-            }
+            .flatMap { getToken("test$it").zipWith(Mono.just(it)) }
             .flatMap {
                 val testIp = correctIp + it.t2
                 webClient.get()
@@ -120,37 +105,5 @@ class ExchangeHolderIntegrationTest : AbstractIntegrationMultithreadingTest() {
         StepVerifier.create(responsesFlux)
             .thenConsumeWhile { it.t2 == it.t1[1] }
             .verifyComplete()
-    }
-
-    @BeforeAll
-    fun beforeTests() {
-        runBlocking {
-            val userQueryBuffer = StringBuffer("insert into local_user(login, password) values")
-            val authorityQueryBuffer = StringBuffer("insert into authority_user(authority_id, user_id) values")
-
-            Flux.range(0, countUsersForTest)
-                .parallel(10)
-                .runOn(Schedulers.boundedElastic())
-                .flatMap {
-                    userQueryBuffer.append("('test$it', 'b9y3FIltPBbk7rrP80Tav8CTHRBRfg=='),")
-                    authorityQueryBuffer.append("(getAuthority('ROLE_USER'), getUser('test$it')),")
-                    Flux.just(it)
-                }
-                .doOnComplete {
-                    runBlocking {
-                        databaseClient.sql(userQueryBuffer.substring(0, userQueryBuffer.length - 1) + ";").fetch()
-                            .rowsUpdated().awaitLast()
-                    }
-                    databaseClient.sql(authorityQueryBuffer.substring(0, authorityQueryBuffer.length - 1) + ";").fetch()
-                        .rowsUpdated().subscribe()
-                }
-                .awaitLast()
-        }
-    }
-
-    @AfterAll
-    fun afterTests() {
-        databaseClient.sql("delete from local_user where login like 'test%';").fetch().rowsUpdated()
-            .subscribe()
     }
 }
