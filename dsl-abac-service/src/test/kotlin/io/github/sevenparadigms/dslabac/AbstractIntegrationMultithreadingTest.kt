@@ -30,7 +30,7 @@ abstract class AbstractIntegrationMultithreadingTest {
 
     @LocalServerPort
     protected var port = 0
-    protected val countUsersForTest = 100
+    protected val countUsersForTest = 1000
     protected val correctIp = "192.168.2.207"
     protected val nonCorrectIp = "127.0.0.1"
     protected val testUsersPassword = "passwore"
@@ -57,29 +57,10 @@ abstract class AbstractIntegrationMultithreadingTest {
             adminToken = getAwaitToken("admin")
             userToken = getAwaitToken("user")
             databaseClient = DatabaseClient.create(ConnectionFactories.get(databaseUrl))
-
-            val userQueryBuffer = StringBuffer("insert into local_user(login, password) values")
-            val authorityQueryBuffer = StringBuffer("insert into authority_user(authority_id, user_id) values")
-
-            Flux.range(0, countUsersForTest)
-                .parallel(10)
-                .runOn(Schedulers.boundedElastic())
-                .flatMap {
-                    userQueryBuffer.append("('test$it', 'b9y3FIltPBbk7rrP80Tav8CTHRBRfg=='),")
-                    authorityQueryBuffer.append("(getAuthority('ROLE_USER'), getUser('test$it')),")
-                    Flux.just(it)
-                }
-                .doOnComplete {
-                    runBlocking {
-                        databaseClient.sql(userQueryBuffer.substring(0, userQueryBuffer.length - 1) + ";").fetch()
-                            .rowsUpdated().awaitLast()
-                    }
-                    databaseClient.sql(authorityQueryBuffer.substring(0, authorityQueryBuffer.length - 1) + ";").fetch()
-                        .rowsUpdated().subscribe()
-                }
-                .awaitLast()
+            initializeTestDatabase()
         }
     }
+
 
     @AfterAll
     fun shutdown() {
@@ -107,5 +88,41 @@ abstract class AbstractIntegrationMultithreadingTest {
             .uri("auth")
             .body(BodyInserters.fromPublisher(Mono.just(createUser(login)), UserPrincipal::class.java))
             .exchangeToMono { resp -> resp.bodyToMono(String::class.java) }
+    }
+
+    private suspend fun initializeTestDatabase() {
+        var userQueryBuffer: StringBuffer?
+        var authorityQueryBuffer: StringBuffer?
+
+        Flux.range(0, countUsersForTest)
+            .parallel(10)
+            .runOn(Schedulers.boundedElastic())
+            .flatMap {
+                val userLogin = "test$it"
+                Flux.zip(
+                    Mono.just("('$userLogin', 'b9y3FIltPBbk7rrP80Tav8CTHRBRfg=='),"),
+                    Mono.just("(getAuthority('ROLE_USER'), getUser('$userLogin')),")
+                )
+            }
+            .sequential()
+            .buffer(500)
+            .map {
+                runBlocking {
+                    userQueryBuffer = StringBuffer("insert into local_user(login, password) values")
+                    authorityQueryBuffer = StringBuffer("insert into authority_user(authority_id, user_id) values")
+
+                    it.stream().forEach {
+                        userQueryBuffer!!.append(it.t1)
+                        authorityQueryBuffer!!.append(it.t2)
+                    }
+
+                    databaseClient.sql(userQueryBuffer!!.substring(0, userQueryBuffer!!.length - 1) + ";").fetch()
+                        .rowsUpdated().awaitLast()
+                    databaseClient.sql(authorityQueryBuffer!!.substring(0, authorityQueryBuffer!!.length - 1) + ";")
+                        .fetch()
+                        .rowsUpdated().awaitLast()
+                }
+            }
+            .awaitLast()
     }
 }
