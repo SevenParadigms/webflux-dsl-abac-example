@@ -14,6 +14,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Schedulers
 import reactor.test.StepVerifier
+import java.time.Duration
 
 class ExchangeHolderIntegrationTest : AbstractIntegrationMultithreadingTest() {
 
@@ -96,6 +97,7 @@ class ExchangeHolderIntegrationTest : AbstractIntegrationMultithreadingTest() {
     @Test
     fun `test concurrency by countUsersForTest`() {
         val responsesFlux = Flux.range(0, countUsersForTest)
+            .delayElements(Duration.ofMillis(20))
             .parallel(10)
             .runOn(Schedulers.boundedElastic())
             .flatMap {
