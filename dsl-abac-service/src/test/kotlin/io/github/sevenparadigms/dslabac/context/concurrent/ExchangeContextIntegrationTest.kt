@@ -1,4 +1,4 @@
-package io.github.sevenparadigms.dslabac.api.context.concurrent
+package io.github.sevenparadigms.dslabac.context.concurrent
 
 import io.github.sevenparadigms.abac.Constants
 import io.github.sevenparadigms.dslabac.AbstractIntegrationMultithreadingTest

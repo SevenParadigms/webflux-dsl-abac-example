@@ -30,7 +30,7 @@ abstract class AbstractIntegrationMultithreadingTest {
 
     @LocalServerPort
     protected var port = 0
-    protected val countUsersForTest = 1000
+    protected val countUsersForTest = 100
     protected val correctIp = "192.168.2.207"
     protected val nonCorrectIp = "127.0.0.1"
     protected val testUsersPassword = "passwore"

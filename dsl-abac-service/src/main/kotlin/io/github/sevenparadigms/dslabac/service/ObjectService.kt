@@ -2,6 +2,7 @@ package io.github.sevenparadigms.dslabac.service
 
 import com.fasterxml.jackson.databind.JsonNode
 import io.github.sevenparadigms.abac.security.context.ExchangeHolder
+import io.github.sevenparadigms.dslabac.data.Jfolder
 import io.github.sevenparadigms.dslabac.data.Jobject
 import io.github.sevenparadigms.dslabac.data.ObjectRepository
 import org.sevenparadigms.kotlin.common.objectToJson
@@ -17,8 +18,8 @@ class ObjectService(
     private val objectRepository: ObjectRepository
 ) {
     @Transactional(readOnly = true)
-    fun findAll(dsl: Dsl): Flux<Jobject> =
-        objectRepository.findAll(dsl)
+    fun findAll(jfolderId: UUID, dsl: Dsl): Flux<Jobject> =
+        objectRepository.findAll(dsl.equals("jfolder_id", jfolderId))
 
     @Transactional
     fun save(jobject: Jobject): Mono<Jobject> {
