@@ -18,7 +18,6 @@ class DslIntegrationTest : AbstractIntegrationTest() {
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
-            .expectSubscription()
             .expectNextMatches { it != null }
             .thenCancel()
             .verify()
@@ -33,7 +32,6 @@ class DslIntegrationTest : AbstractIntegrationTest() {
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
-            .expectSubscription()
             .expectNextMatches { it != null }
             .thenCancel()
             .verify()
@@ -48,7 +46,6 @@ class DslIntegrationTest : AbstractIntegrationTest() {
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
-            .expectSubscription()
             .expectNextCount(0)
             .thenCancel()
             .verify()
@@ -76,7 +73,6 @@ class DslIntegrationTest : AbstractIntegrationTest() {
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
-            .expectSubscription()
             .expectNextMatches { it != null }
             .thenCancel()
             .verify()
@@ -91,7 +87,6 @@ class DslIntegrationTest : AbstractIntegrationTest() {
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
-            .expectSubscription()
             .expectNextMatches { it != null }
             .thenCancel()
             .verify()
@@ -106,7 +101,6 @@ class DslIntegrationTest : AbstractIntegrationTest() {
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
-            .expectSubscription()
             .expectNextMatches { it != null }
             .thenCancel()
             .verify()
@@ -121,7 +115,6 @@ class DslIntegrationTest : AbstractIntegrationTest() {
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
-            .expectSubscription()
             .expectNextMatches { it != null }
             .thenCancel()
             .verify()
@@ -130,14 +123,12 @@ class DslIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `findAll test case jsonb not in`() {
         val flux = webClient.get()
-            .uri("dsl-abac/$jfolderId?query=jtree.name^Acme&sort=id:desc")
+            .uri("dsl-abac/$jfolderId?query=jtree.name^Acme doc&sort=id:desc")
             .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
             .retrieve()
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
-            .expectSubscription()
-            .expectNextMatches { it != null }
             .expectNextMatches { it != null }
             .thenCancel()
             .verify()
@@ -146,14 +137,12 @@ class DslIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `findAll test case jsonb not equals`() {
         val flux = webClient.get()
-            .uri("dsl-abac/$jfolderId?query=jtree.name!=Acme&sort=id:desc")
+            .uri("dsl-abac/$jfolderId?query=jtree.name!=Acme doc&sort=id:desc")
             .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
             .retrieve()
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
-            .expectSubscription()
-            .expectNextMatches { it != null }
             .expectNextMatches { it != null }
             .thenCancel()
             .verify()
@@ -168,8 +157,6 @@ class DslIntegrationTest : AbstractIntegrationTest() {
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
-            .expectSubscription()
-            .expectNextMatches { it != null }
             .expectNextMatches { it != null }
             .thenCancel()
             .verify()
@@ -178,14 +165,12 @@ class DslIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `findAll test case jsonb join by folderId`() {
         val flux = webClient.get()
-            .uri("dsl-abac/$jfolderId?query=jfolder.id==$jfolderId&jfolder.fields=jfolder.id, jfolder.jtree&sort=id:desc")
+            .uri("dsl-abac/$jfolderId?query=jfolder.id==$jfolderId&fields=jfolder.id, jfolder.jtree&sort=id:desc")
             .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
             .retrieve()
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
-            .expectSubscription()
-            .expectNextMatches { it != null }
             .expectNextMatches { it != null }
             .thenCancel()
             .verify()
