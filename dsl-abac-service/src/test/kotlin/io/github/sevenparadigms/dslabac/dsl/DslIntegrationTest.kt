@@ -25,7 +25,7 @@ class DslIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `findAll test case not null`() {
+    fun `findAll test case is not null`() {
         val flux = webClient.get()
             .uri("dsl-abac/$jfolderId?query=!@jtree&sort=id:desc")
             .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
@@ -40,9 +40,24 @@ class DslIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
+    fun `findAll test case is null`() {
+        val flux = webClient.get()
+            .uri("dsl-abac/$jfolderId?query=@jtree&sort=id:desc")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .retrieve()
+            .bodyToFlux(Jobject::class.java)
+
+        StepVerifier.create(flux)
+            .expectSubscription()
+            .expectNextCount(0)
+            .thenCancel()
+            .verify()
+    }
+
+    @Test
     fun `findAll test case not null check abac rule`() {
         val flux = webClient.get()
-            .uri("dsl-abac/$jfolderId?query=!@jtree&fields=id&sort=id:desc")
+            .uri("dsl-abac/$jfolderId?query=!@jtree&fields=id,jtree&sort=id:desc")
             .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + userToken)
             .retrieve()
             .toBodilessEntity()
@@ -83,15 +98,94 @@ class DslIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `findAll test case jsonb in`() {
+    fun `findAll test case fields with escape`() {
         val flux = webClient.get()
-            .uri("dsl-abac/$jfolderId?query=jtree.name##Acme doc&sort=id:desc")
+            .uri("dsl-abac/$jfolderId?query=jtree.name^^Acme&fields=id, jtree&sort=id:desc")
             .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
             .retrieve()
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
             .expectSubscription()
+            .expectNextMatches { it != null }
+            .thenCancel()
+            .verify()
+    }
+
+    @Test
+    fun `findAll test case jsonb in`() {
+        val flux = webClient.get()
+            .uri("dsl-abac/$jfolderId?query=jtree.name^^Acme&sort=id:desc")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .retrieve()
+            .bodyToFlux(Jobject::class.java)
+
+        StepVerifier.create(flux)
+            .expectSubscription()
+            .expectNextMatches { it != null }
+            .thenCancel()
+            .verify()
+    }
+
+    @Test
+    fun `findAll test case jsonb not in`() {
+        val flux = webClient.get()
+            .uri("dsl-abac/$jfolderId?query=jtree.name^Acme&sort=id:desc")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .retrieve()
+            .bodyToFlux(Jobject::class.java)
+
+        StepVerifier.create(flux)
+            .expectSubscription()
+            .expectNextMatches { it != null }
+            .expectNextMatches { it != null }
+            .thenCancel()
+            .verify()
+    }
+
+    @Test
+    fun `findAll test case jsonb not equals`() {
+        val flux = webClient.get()
+            .uri("dsl-abac/$jfolderId?query=jtree.name!=Acme&sort=id:desc")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .retrieve()
+            .bodyToFlux(Jobject::class.java)
+
+        StepVerifier.create(flux)
+            .expectSubscription()
+            .expectNextMatches { it != null }
+            .expectNextMatches { it != null }
+            .thenCancel()
+            .verify()
+    }
+
+    @Test
+    fun `findAll test case jsonb equals full search`() {
+        val flux = webClient.get()
+            .uri("dsl-abac/$jfolderId?query=jtree.name~~Acme&sort=id:desc")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .retrieve()
+            .bodyToFlux(Jobject::class.java)
+
+        StepVerifier.create(flux)
+            .expectSubscription()
+            .expectNextMatches { it != null }
+            .expectNextMatches { it != null }
+            .thenCancel()
+            .verify()
+    }
+
+    @Test
+    fun `findAll test case jsonb join by folderId`() {
+        val flux = webClient.get()
+            .uri("dsl-abac/$jfolderId?query=jfolder.id==$jfolderId&jfolder.fields=jfolder.id, jfolder.jtree&sort=id:desc")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .retrieve()
+            .bodyToFlux(Jobject::class.java)
+
+        StepVerifier.create(flux)
+            .expectSubscription()
+            .expectNextMatches { it != null }
             .expectNextMatches { it != null }
             .thenCancel()
             .verify()

@@ -1,10 +1,10 @@
 spring:
   r2dbc:
-    url: r2dbc:postgresql://postgres:91823God@localhost/dsl_abac?schema=public
+    url: r2dbc:postgresql://postgres:postgres@localhost/dsl_abac?schema=public
     pool:
       maxSize: 20
   security:
-    abac.url: r2dbc:postgresql://postgres:91823God@localhost/abac_rules?schema=public
+    abac.url: r2dbc:postgresql://postgres:postgres@localhost/abac_rules?schema=public
     iteration: 512
     length: 720
     secret: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTYzMDYxMDI5NX0.m0XU2NvGaAtzptgLfmptj3Fk7S1e1NrBTYTqBAjHoPI8lbRB7z3J52FiLRw-PUZPjQusDt19RszrUQDsZoVXeQ

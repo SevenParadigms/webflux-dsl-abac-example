@@ -16,7 +16,7 @@ import java.util.*
 @RequestMapping(path = ["/dsl-abac"])
 interface ObjectApi {
 
-//    @PreAuthorize("hasPermission(#dsl, 'findAll')")
+    @PreAuthorize("hasPermission(#dsl, 'findAll')")
     @GetMapping(value = ["{jfolderId}"])
     fun findAll(@PathVariable jfolderId: UUID, dsl: Dsl): Flux<Jobject>
 
