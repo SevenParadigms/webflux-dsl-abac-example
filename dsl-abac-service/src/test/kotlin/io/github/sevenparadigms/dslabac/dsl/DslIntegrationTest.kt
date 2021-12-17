@@ -82,5 +82,19 @@ class DslIntegrationTest : AbstractIntegrationTest() {
             .verify()
     }
 
+    @Test
+    fun `findAll test case jsonb in`() {
+        val flux = webClient.get()
+            .uri("dsl-abac/$jfolderId?query=jtree.name##Acme doc&sort=id:desc")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .retrieve()
+            .bodyToFlux(Jobject::class.java)
+
+        StepVerifier.create(flux)
+            .expectSubscription()
+            .expectNextMatches { it != null }
+            .thenCancel()
+            .verify()
+    }
 
 }
