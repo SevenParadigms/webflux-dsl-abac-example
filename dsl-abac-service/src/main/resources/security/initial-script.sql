@@ -65,4 +65,7 @@ CREATE TABLE abac_rule
 
 insert into abac_rule(name, domain_type, target, condition)
 values('Test Rule', 'Dsl', 'action == ''findAll'' and subject.roles.contains(''ROLE_ADMIN'')', 'domainObject.sort == ''id:desc'''),
-      ('IP Rule', 'Dsl', 'action == ''findAll'' and environment.ip == ''192.168.2.207''', 'domainObject.sort == ''id:desc''');
+      ('IP Rule', 'Dsl', 'action == ''findAll'' and environment.ip == ''192.168.2.207''', 'domainObject.sort == ''id:desc'''),
+      ('Query jtree not null Rule', 'Dsl', 'action == ''findAll'' and subject.roles.contains(''ROLE_ADMIN'')', 'domainObject.query == ''!@jtree'' and domainObject.fields ==''id''  and domainObject.sort == ''id:desc'''),
+      ('Query equals jsonb field Rule', 'Dsl', 'action == ''findAll'' and subject.roles.contains(''ROLE_ADMIN'')', 'domainObject.query == ''jtree.name==Acme doc'' and domainObject.sort == ''id:desc'''),
+      ('Query equals jsonb field in Rule', 'Dsl', 'action == ''findAll'' and subject.roles.contains(''ROLE_ADMIN'')', 'domainObject.query == ''jtree.name^^Acme doc'' and domainObject.sort == ''id:desc''');

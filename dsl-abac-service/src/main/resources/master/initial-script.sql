@@ -126,4 +126,8 @@ INSERT INTO jfolder(parent_id, jtree) VALUES (jfolder('email'), '{"name": "email
 INSERT INTO jfolder(parent_id, jtree) VALUES (jfolder('sms'), '{"name": "sms_personal"}');
 INSERT INTO jfolder(parent_id, jtree) VALUES (jfolder('sms'), '{"name": "sms_distribute"}');
 
-INSERT INTO jobject(jfolder_id, jtree) VALUES (jfolder('organization'), '{"name": "Acme", "description": "To infinity... and beyond"}');
+INSERT INTO jobject(jfolder_id, jtree) VALUES (jfolder('organization'), '{"name": "Acme", "description": "To infinity... and beyond"}'),
+                                              (jfolder('document'), '{"name": "Acme doc", "description": "To infinity... and beyond"}'),
+                                              (jfolder('employee'), '{"name": "Acme emp", "description": "To infinity... and beyond"}'),
+                                              (jfolder('file'), '{"name": "Acme file", "description": "To infinity... and beyond"}'),
+                                              (jfolder('type'), '{"name": "Acme type", "description": "To infinity... and beyond"}');

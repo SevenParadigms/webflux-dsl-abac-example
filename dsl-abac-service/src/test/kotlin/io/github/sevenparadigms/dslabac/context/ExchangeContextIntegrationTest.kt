@@ -1,4 +1,4 @@
-package io.github.sevenparadigms.dslabac.api.context
+package io.github.sevenparadigms.dslabac.context
 
 import io.github.sevenparadigms.abac.Constants
 import io.github.sevenparadigms.dslabac.AbstractIntegrationTest
