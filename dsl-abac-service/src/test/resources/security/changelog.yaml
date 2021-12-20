@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: lao.tsing
+      comment: "initial script"
+      changes:
+        - sqlFile:
+            path: initial-script.sql
+            relativeToChangelogFile: true
+            splitStatements: false

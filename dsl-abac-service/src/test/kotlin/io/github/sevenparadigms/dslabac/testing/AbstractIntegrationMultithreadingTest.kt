@@ -1,7 +1,8 @@
-package io.github.sevenparadigms.dslabac
+package io.github.sevenparadigms.dslabac.testing
 
 import io.github.sevenparadigms.abac.security.auth.data.UserPrincipal
 import io.github.sevenparadigms.abac.security.context.ExchangeContext
+import io.github.sevenparadigms.dslabac.testing.config.PostgresTestContainer
 import io.r2dbc.spi.ConnectionFactories
 import kotlinx.coroutines.reactive.awaitLast
 import kotlinx.coroutines.runBlocking
@@ -26,7 +27,7 @@ import java.net.NetworkInterface
 @TestPropertySource("classpath:application.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-abstract class AbstractIntegrationMultithreadingTest {
+abstract class AbstractIntegrationMultithreadingTest : PostgresTestContainer() {
 
     @LocalServerPort
     protected var port = 0
