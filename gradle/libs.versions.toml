@@ -45,6 +45,8 @@ swagger-annotations = { module = "io.swagger.core.v3:swagger-annotations", versi
 spring-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-framework"}
 junit = { module = "junit:junit", version.ref = "test-junit"}
 testcontainers = { module = "org.testcontainers:postgresql", version.ref = "test-containers" }
+r2dbc-testcontainers = { module = "org.testcontainers:r2dbc", version.ref = "test-containers" }
+jupiter-testcontainers = { module = "org.testcontainers:junit-jupiter", version.ref = "test-containers" }
 reactor-test = { module = "io.projectreactor:reactor-test", version.ref = "test-reactor" }
 
 feign-webclient = { module = "com.playtika.reactivefeign:feign-reactor-webclient", version.ref = "feign-client" }
@@ -62,4 +64,4 @@ kotlin = [ "kotlin-reflect", "kotlin-stdlib", "kotlin-extensions", "kotlin-corou
 service = [ "webflux", "netty-codec", "abac-security", "reactor-dsl", "reactor-swagger", "openapi", "swagger-annotations" ]
 feign = [ "feign-webclient", "feign-cloud", "feign-spring", "feign-slf4j" ]
 liquibase = [ "liquibase-core", "logback-core", "logback-classic", "postgres-jdbc", "liquibase-yaml" ]
-test = [ "spring-test", "junit", "reactor-test", "testcontainers" ]
+test = [ "spring-test", "junit", "reactor-test", "testcontainers", "r2dbc-testcontainers", "jupiter-testcontainers" ]

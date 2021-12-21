@@ -1,57 +1,63 @@
 package io.github.sevenparadigms.dslabac.testing.config
 
-import org.junit.jupiter.api.AfterAll
+import com.github.dockerjava.api.model.ExposedPort
+import com.github.dockerjava.api.model.HostConfig
+import com.github.dockerjava.api.model.PortBinding
+import com.github.dockerjava.api.model.Ports
+import io.r2dbc.spi.ConnectionFactories
 import org.junit.jupiter.api.BeforeAll
-import org.testcontainers.containers.BindMode
+import org.junit.jupiter.api.TestInstance
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.r2dbc.core.DatabaseClient
+import org.springframework.test.context.TestPropertySource
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.containers.PostgreSQLR2DBCDatabaseContainer
-import java.io.File
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
+import org.testcontainers.utility.DockerImageName
+import org.testcontainers.utility.MountableFile
 
-open class PostgresTestContainer {
+@Testcontainers
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestPropertySource("classpath:application.properties")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class PostgresTestContainer {
 
-    companion object {
-        private val dslAbacContainer = createContainer("dsl_abac", "master/initial-script.sql")
-        private val abacRulesContainer = createContainer("abac_rules", "security/initial-script.sql")
+    internal class KContainer(image: DockerImageName) : PostgreSQLContainer<KContainer>(image)
 
-//        val dslR2DBCContainer = PostgreSQLR2DBCDatabaseContainer(dslAbacContainer)
-//        val abacR2DBCContainer = PostgreSQLR2DBCDatabaseContainer(abacRulesContainer)
+    internal lateinit var postgresDatabaseClient: DatabaseClient
 
-        fun initDatabase() {
-            dslAbacContainer.start()
-            abacRulesContainer.start()
-        }
-
-        fun stopDatabase() {
-            dslAbacContainer.stop()
-            abacRulesContainer.stop()
-        }
-
-        private fun createContainer(databaseName: String, initScriptPath: String): PostgreSQLContainer<*> {
-            val container = PostgreSQLContainer("postgres:13.3")
-                .withExposedPorts(5432)
-                .withExtraHost("localhost", "127.0.0.1")
-                .withInitScript(initScriptPath)
-                .withDatabaseName(databaseName)
-                .withUsername("postgres")
-                .withPassword("postgres")
-            container.addFileSystemBind(
-                initScriptPath + File.separator + "create.sh",
-                "/docker-entrypoint-initdb.d/00_create.sh",
-                BindMode.READ_ONLY
-            )
-            return container
-        }
-    }
+    @Value("\${spring.security.abac.url}")
+    private lateinit var databaseUrl: String
 
     @BeforeAll
-    fun initDatabase() {
-        dslAbacContainer.start()
-        abacRulesContainer.start()
+    internal fun initContainer() {
+        postgresDatabaseClient = DatabaseClient.create(ConnectionFactories.get(databaseUrl))
     }
 
-    @AfterAll
-    fun stopDatabase() {
-        dslAbacContainer.stop()
-        abacRulesContainer.stop()
+    companion object {
+        @JvmStatic
+        private val postgresContainer = createContainer()
+
+        @JvmStatic
+        @Container
+        private val postgresR2DBCContainer = PostgreSQLR2DBCDatabaseContainer(postgresContainer)
+
+        private fun createContainer(): KContainer =
+            KContainer(DockerImageName.parse("jordemort/postgres-rum:latest").asCompatibleSubstituteFor("postgres"))
+                .withDatabaseName("test-db")
+                .withUsername("postgres")
+                .withPassword("postgres")
+                .withCreateContainerCmdModifier { cmd ->
+                    cmd.withHostConfig(
+                        HostConfig().withPortBindings(PortBinding(Ports.Binding.bindPort(5432), ExposedPort(5432)))
+                    )
+                }
+                .withReuse(true)
+                .withCopyFileToContainer(
+                    MountableFile.forClasspathResource("init.sql"),
+                    "/docker-entrypoint-initdb.d/"
+                )
     }
 }

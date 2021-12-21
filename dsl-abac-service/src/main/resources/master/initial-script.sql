@@ -70,10 +70,19 @@ $$ LANGUAGE plpgsql
 CREATE FUNCTION tsv_update() RETURNS trigger AS
 $$
 begin
-    update jobject
-    set tsv = setweight(to_tsvector('pg_catalog.english', new.jtree->>'name'), 'A') || setweight(to_tsvector('pg_catalog.english', new.jtree), 'B')
-    where id = old.id;
-    return null;
+    if  (TG_OP = 'UPDATE') then
+        update jobject
+        set tsv = setweight(to_tsvector('pg_catalog.english', new.jtree->>'name'), 'A') || setweight(to_tsvector('pg_catalog.english', new.jtree), 'B')
+        where id = old.id;
+        return null;
+        end if;
+
+    if  (TG_OP = 'INSERT') then
+        update jobject
+        set tsv = setweight(to_tsvector('pg_catalog.english', new.jtree->>'name'), 'A') || setweight(to_tsvector('pg_catalog.english', new.jtree), 'B')
+        where id = new.id;
+        return null;
+        end if;
 end
 $$ LANGUAGE plpgsql;
 
