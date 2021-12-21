@@ -1,7 +1,7 @@
 package io.github.sevenparadigms.dslabac.dsl
 
 import io.github.sevenparadigms.abac.Constants
-import io.github.sevenparadigms.dslabac.AbstractIntegrationTest
+import io.github.sevenparadigms.dslabac.testing.AbstractIntegrationTest
 import io.github.sevenparadigms.dslabac.data.Jobject
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
@@ -149,7 +149,7 @@ class DslIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `findAll test case jsonb equals full search`() {
+    fun `findAll test case jsonb equals like`() {
         val flux = webClient.get()
             .uri("dsl-abac/$jfolderId?query=jtree.name~~Acme&sort=id:desc")
             .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
@@ -158,6 +158,34 @@ class DslIntegrationTest : AbstractIntegrationTest() {
 
         StepVerifier.create(flux)
             .expectNextMatches { it != null }
+            .thenCancel()
+            .verify()
+    }
+
+    @Test
+    fun `findAll test case jsonb not equals full search`() {
+        val flux = webClient.get()
+            .uri("dsl-abac/$jfolderId?query=tsv@@Acme&sort=id:desc")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .retrieve()
+            .bodyToFlux(Jobject::class.java)
+
+        StepVerifier.create(flux)
+            .expectNextCount(2)
+            .thenCancel()
+            .verify()
+    }
+
+    @Test
+    fun `findAll test case jsonb full search with equals`() {
+        val flux = webClient.get()
+            .uri("dsl-abac/$jfolderId?query=tsv@@Acme,jtree.name==Acme type&sort=id:desc")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .retrieve()
+            .bodyToFlux(Jobject::class.java)
+
+        StepVerifier.create(flux)
+            .expectNextCount(1)
             .thenCancel()
             .verify()
     }

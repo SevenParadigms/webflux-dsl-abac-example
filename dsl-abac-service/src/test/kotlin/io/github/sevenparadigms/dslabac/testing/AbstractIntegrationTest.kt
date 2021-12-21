@@ -1,15 +1,14 @@
-package io.github.sevenparadigms.dslabac
+package io.github.sevenparadigms.dslabac.testing
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.sevenparadigms.abac.security.auth.data.UserPrincipal
 import io.github.sevenparadigms.abac.security.context.ExchangeContext
 import io.github.sevenparadigms.dslabac.data.FolderRepository
+import io.github.sevenparadigms.dslabac.testing.config.PostgresTestContainer
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.BodyInserters
@@ -19,9 +18,7 @@ import reactor.core.publisher.Mono
 import java.net.NetworkInterface
 import java.util.*
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-abstract class AbstractIntegrationTest {
+abstract class AbstractIntegrationTest : PostgresTestContainer() {
 
     @LocalServerPort
     protected var port = 0
