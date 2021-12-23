@@ -7,7 +7,7 @@ spring-framework = "2.5.7"
 netty-server = "4.1.67.Final"
 abac = "1.0.0"
 
-r2dbc-dsl = "4.4.7"
+r2dbc-dsl = "4.4.9"
 r2dbc-postgres = "0.8.10.RELEASE"
 jdbc-postgres = "42.2.23"
 

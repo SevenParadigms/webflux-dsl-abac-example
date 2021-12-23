@@ -24,7 +24,7 @@ interface ObjectApi {
     fun save(@RequestBody jobject: Jobject): Mono<Jobject>
 
     @DeleteMapping
-    fun delete(@RequestParam id: UUID): Mono<ServerResponse>
+    fun delete(dsl: Dsl): Mono<ServerResponse>
 
     @GetMapping("/listen", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     fun listener(): Flux<JsonNode>

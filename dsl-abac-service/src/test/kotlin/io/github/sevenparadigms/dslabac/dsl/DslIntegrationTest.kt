@@ -1,10 +1,16 @@
 package io.github.sevenparadigms.dslabac.dsl
 
 import io.github.sevenparadigms.abac.Constants
-import io.github.sevenparadigms.dslabac.testing.AbstractIntegrationTest
 import io.github.sevenparadigms.dslabac.data.Jobject
+import io.github.sevenparadigms.dslabac.testing.AbstractIntegrationTest
+import kotlinx.coroutines.reactive.awaitFirst
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
+import org.springframework.r2dbc.core.awaitOne
+import org.springframework.web.reactive.function.BodyInserters
+import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
 class DslIntegrationTest : AbstractIntegrationTest() {
@@ -204,4 +210,69 @@ class DslIntegrationTest : AbstractIntegrationTest() {
             .verify()
     }
 
+    @Test
+    fun `delete equals jobject by jsonb`() {
+        val jobject = Jobject(
+            jfolderId = jfolderId,
+            jtree = objectMapper.readTree("{\"name\": \"deleteTesting1\", \"description\": \"Testing\"}")
+        )
+        runBlocking {
+            webClient.post()
+                .uri("dsl-abac")
+                .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+                .body(BodyInserters.fromPublisher(Mono.just(jobject), Jobject::class.java))
+                .retrieve()
+                .bodyToMono(Jobject::class.java)
+                .doOnNext { jobjectId = it.id }.awaitFirst()
+            var exists =
+                postgresDatabaseClient.sql("select exists (select 1 from jobject where jtree->>'name' ='deleteTesting1');")
+                    .fetch().awaitOne()["exists"] as Boolean
+
+            Assertions.assertTrue(exists)
+
+            webClient.delete()
+                .uri("dsl-abac?query=jtree.name==deleteTesting1")
+                .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + userToken)
+                .retrieve()
+                .toBodilessEntity().awaitFirst()
+            exists =
+                postgresDatabaseClient.sql("select exists (select 1 from jobject where jtree->>'name' ='deleteTesting1');")
+                    .fetch().awaitOne()["exists"] as Boolean
+
+            Assertions.assertFalse(exists)
+        }
+    }
+
+    @Test
+    fun `delete in jobject by jsonb`() {
+        val jobject = Jobject(
+            jfolderId = jfolderId,
+            jtree = objectMapper.readTree("{\"name\": \"deleteTesting1\", \"description\": \"Testing\"}")
+        )
+        runBlocking {
+            webClient.post()
+                .uri("dsl-abac")
+                .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+                .body(BodyInserters.fromPublisher(Mono.just(jobject), Jobject::class.java))
+                .retrieve()
+                .bodyToMono(Jobject::class.java)
+                .doOnNext { jobjectId = it.id }.awaitFirst()
+            var exists =
+                postgresDatabaseClient.sql("select exists (select 1 from jobject where jtree->>'name' ='deleteTesting1');")
+                    .fetch().awaitOne()["exists"] as Boolean
+
+            Assertions.assertTrue(exists)
+
+            webClient.delete()
+                .uri("dsl-abac?query=jtree.name^^deleteTesting1 delete")
+                .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + userToken)
+                .retrieve()
+                .toBodilessEntity().awaitFirst()
+            exists =
+                postgresDatabaseClient.sql("select exists (select 1 from jobject where jtree->>'name' ='deleteTesting1');")
+                    .fetch().awaitOne()["exists"] as Boolean
+
+            Assertions.assertFalse(exists)
+        }
+    }
 }

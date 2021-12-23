@@ -27,7 +27,7 @@ class ObjectService(
     }
 
     @Transactional
-    fun delete(id: UUID): Mono<Void> = objectRepository.deleteById(id)
+    fun delete(dsl: Dsl): Mono<Void> = objectRepository.delete(dsl)
 
     fun listener(): Flux<JsonNode> = objectRepository.listener().map { it.parameter!!.objectToJson() }
 
