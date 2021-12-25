@@ -136,6 +136,7 @@ INSERT INTO jfolder(parent_id, jtree) VALUES (jfolder('sms'), '{"name": "sms_per
 INSERT INTO jfolder(parent_id, jtree) VALUES (jfolder('sms'), '{"name": "sms_distribute"}');
 
 INSERT INTO jobject(jfolder_id, jtree) VALUES (jfolder('organization'), '{"name": "Acme", "description": "To infinity... and beyond"}'),
+                                              (jfolder('organization'), '{"name": "Acme or", "description": "To infinity... and beyond"}'),
                                               (jfolder('document'), '{"name": "Acme doc", "description": "To infinity... and beyond"}'),
                                               (jfolder('employee'), '{"name": "Acme emp", "description": "To infinity... and beyond"}'),
                                               (jfolder('file'), '{"name": "Acme file", "description": "To infinity... and beyond"}'),
