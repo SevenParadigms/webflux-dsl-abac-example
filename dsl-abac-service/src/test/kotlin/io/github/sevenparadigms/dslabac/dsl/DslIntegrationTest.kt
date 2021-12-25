@@ -279,7 +279,7 @@ class DslIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `equals or jsonb`() {
         val flux = webClient.get()
-            .uri("dsl-abac/$jfolderId?query=jtree.name==Acme,(jtree.name==Acme or&sort=id:desc")
+            .uri("dsl-abac/$jfolderId?query=jtree.name==Acme,()jtree.name==Acme or&sort=id:desc")
             .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
             .retrieve()
             .bodyToFlux(Jobject::class.java)
