@@ -11,7 +11,3 @@ spring:
     expiration: 1800
     X-User-Id: true
     skip-token-validation: true
-logging:
-  level:
-    io.r2dbc.postgresql.QUERY: DEBUG # for queries
-    io.r2dbc.postgresql.PARAM: DEBUG # for parameters
