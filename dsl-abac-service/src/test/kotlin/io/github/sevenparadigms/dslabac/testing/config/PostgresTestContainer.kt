@@ -25,7 +25,6 @@ import org.testcontainers.utility.MountableFile
 class PostgresTestContainer {
 
     internal class KContainer(image: DockerImageName) : PostgreSQLContainer<KContainer>(image)
-
     internal lateinit var postgresDatabaseClient: DatabaseClient
 
     @Value("\${spring.security.abac.url}")

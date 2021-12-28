@@ -84,7 +84,7 @@ class ObjectApiIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun eDelete() {
         val deleteResponse = webClient.delete()
-            .uri("dsl-abac?id=$jobjectId")
+            .uri("dsl-abac?query=jfolderId==$jobjectId")
             .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + userToken)
             .retrieve()
             .toBodilessEntity()
