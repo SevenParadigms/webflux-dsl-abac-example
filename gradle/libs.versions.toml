@@ -1,11 +1,12 @@
 [versions]
-kotlin-all = "1.6.0"
+kotlin-all = "1.6.10"
 kotlin-extensions = "1.1.4"
 kotlinx-coroutines = "1.5.2-native-mt"
 
 spring-framework = "2.5.7"
 netty-server = "4.1.67.Final"
 abac = "1.0.0"
+oauth2 = "5.6.1"
 
 r2dbc-dsl = "4.5.0"
 r2dbc-postgres = "0.8.10.RELEASE"
@@ -33,6 +34,7 @@ webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", ver
 netty-codec = { module = "io.netty:netty-codec-http", version.ref = "netty-server" }
 transport = { module = "io.netty:netty-transport-native-epoll", version.ref = "netty-server" }
 abac-security = { module = "io.github.sevenparadigms:reactive-spring-abac-security", version.ref = "abac"}
+oauth2-server = { module = "org.springframework.security:spring-security-oauth2-resource-server", version.ref = "oauth2"}
 
 reactor-dsl = { module = "io.github.sevenparadigms:spring-data-r2dbc-dsl", version.ref = "r2dbc-dsl"}
 postgresql = { module = "io.r2dbc:r2dbc-postgresql", version.ref = "r2dbc-postgres"}
@@ -61,7 +63,7 @@ liquibase-yaml = { module = "org.yaml:snakeyaml", version.ref = "snake-yaml"}
 
 [bundles]
 kotlin = [ "kotlin-reflect", "kotlin-stdlib", "kotlin-extensions", "kotlin-coroutines" ]
-service = [ "webflux", "netty-codec", "abac-security", "reactor-dsl", "reactor-swagger", "openapi", "swagger-annotations" ]
+service = [ "webflux", "netty-codec", "abac-security", "reactor-dsl", "reactor-swagger", "openapi", "swagger-annotations", "oauth2-server" ]
 feign = [ "feign-webclient", "feign-cloud", "feign-spring", "feign-slf4j" ]
 liquibase = [ "liquibase-core", "logback-core", "logback-classic", "postgres-jdbc", "liquibase-yaml" ]
 test = [ "spring-test", "junit", "reactor-test", "testcontainers", "r2dbc-testcontainers", "jupiter-testcontainers" ]

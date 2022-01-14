@@ -22,12 +22,10 @@ class ObjectService(
         objectRepository.findAll(dsl.equals("jfolder_id", jfolderId))
 
     @Transactional
-    fun save(jobject: Jobject): Mono<Jobject> {
-        return objectRepository.save(jobject)
-    }
+    fun save(jobject: Jobject) = objectRepository.save(jobject)
 
     @Transactional
-    fun delete(dsl: Dsl): Mono<Void> = objectRepository.delete(dsl)
+    fun delete(dsl: Dsl) = objectRepository.delete(dsl)
 
     fun listener(): Flux<JsonNode> = objectRepository.listener().map { it.parameter!!.objectToJson() }
 

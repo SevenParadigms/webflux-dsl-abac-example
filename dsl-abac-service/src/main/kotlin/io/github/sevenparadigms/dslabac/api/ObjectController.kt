@@ -17,6 +17,6 @@ class ObjectController(val objectService: ObjectService) : ObjectApi {
     override fun findAll(@PathVariable jfolderId: UUID, dsl: Dsl) = objectService.findAll(jfolderId, dsl)
     override fun save(@RequestBody jobject: Jobject) = objectService.save(jobject)
     override fun delete(dsl: Dsl) = objectService.delete(dsl).then(ServerResponse.ok().build())
-    override fun listener(): Flux<JsonNode> = objectService.listener()
+    override fun listener() = objectService.listener()
     override fun context(): Flux<Any> = objectService.context()
 }
