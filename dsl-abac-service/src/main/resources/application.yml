@@ -3,6 +3,8 @@ spring:
     url: r2dbc:postgresql://postgres:postgres@localhost/dsl_abac?schema=public
     pool:
       maxSize: 20
+  main:
+    allow-bean-definition-overriding: true
   security:
     abac.url: r2dbc:postgresql://postgres:postgres@localhost/abac_rules?schema=public
     iteration: 512

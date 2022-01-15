@@ -1,15 +1,17 @@
-package io.github.sevenparadigms.dslabac.testing
+package io.github.sevenparadigms.dslabac.testing.jwt
 
 import io.github.sevenparadigms.abac.security.auth.data.UserPrincipal
 import io.github.sevenparadigms.abac.security.context.ExchangeContext
-import io.github.sevenparadigms.dslabac.testing.config.PostgresTestContainer
+import io.github.sevenparadigms.dslabac.testing.PostgresTestContainer
 import kotlinx.coroutines.reactive.awaitLast
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
+import org.springframework.test.context.TestPropertySource
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBody
@@ -18,6 +20,8 @@ import reactor.core.publisher.Mono
 import reactor.core.scheduler.Schedulers
 import java.net.NetworkInterface
 
+@TestPropertySource("classpath:application-jwt.properties")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 abstract class AbstractIntegrationMultithreadingTest : PostgresTestContainer() {
 
     @LocalServerPort

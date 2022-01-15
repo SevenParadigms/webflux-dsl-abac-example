@@ -1,4 +1,4 @@
-package io.github.sevenparadigms.dslabac.testing.config
+package io.github.sevenparadigms.dslabac.testing
 
 import com.github.dockerjava.api.model.ExposedPort
 import com.github.dockerjava.api.model.HostConfig
@@ -8,9 +8,7 @@ import io.r2dbc.spi.ConnectionFactories
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.r2dbc.core.DatabaseClient
-import org.springframework.test.context.TestPropertySource
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.containers.PostgreSQLR2DBCDatabaseContainer
 import org.testcontainers.junit.jupiter.Container
@@ -20,18 +18,17 @@ import org.testcontainers.utility.MountableFile
 
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestPropertySource("classpath:application.properties")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class PostgresTestContainer {
+open class PostgresTestContainer {
 
     internal class KContainer(image: DockerImageName) : PostgreSQLContainer<KContainer>(image)
+
     internal lateinit var postgresDatabaseClient: DatabaseClient
 
     @Value("\${spring.security.abac.url}")
     private lateinit var databaseUrl: String
 
     @BeforeAll
-    internal fun initContainer() {
+    internal fun initApp() {
         postgresDatabaseClient = DatabaseClient.create(ConnectionFactories.get(databaseUrl))
     }
 
