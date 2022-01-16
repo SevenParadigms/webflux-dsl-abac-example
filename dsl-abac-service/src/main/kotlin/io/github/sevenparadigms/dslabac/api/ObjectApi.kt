@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode
 import io.github.sevenparadigms.dslabac.data.Jobject
 import org.springframework.data.r2dbc.repository.query.Dsl
 import org.springframework.http.MediaType
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactivefeign.spring.config.ReactiveFeignClient
@@ -15,8 +14,6 @@ import java.util.*
 @ReactiveFeignClient(name = "dsl-abac-service")
 @RequestMapping(path = ["/dsl-abac"])
 interface ObjectApi {
-
-    @PreAuthorize("hasPermission(#dsl, 'findAll')")
     @GetMapping(value = ["{jfolderId}"])
     fun findAll(@PathVariable jfolderId: UUID, dsl: Dsl): Flux<Jobject>
 
