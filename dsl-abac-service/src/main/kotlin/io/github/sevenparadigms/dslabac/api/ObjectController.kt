@@ -1,5 +1,6 @@
 package io.github.sevenparadigms.dslabac.api
 
+import io.github.sevenparadigms.dslabac.data.Jfolder
 import io.github.sevenparadigms.dslabac.data.Jobject
 import io.github.sevenparadigms.dslabac.service.ObjectService
 import org.springframework.data.r2dbc.repository.query.Dsl
@@ -13,6 +14,7 @@ import java.util.*
 
 @RestController
 class ObjectController(val objectService: ObjectService) : ObjectApi {
+    override fun folders(): Flux<Jfolder> = objectService.folders()
     @PreAuthorize("hasPermission(#dsl, 'findAll')")
     override fun findAll(@PathVariable jfolderId: UUID, dsl: Dsl) = objectService.findAll(jfolderId, dsl)
     override fun save(@RequestBody jobject: Jobject) = objectService.save(jobject)

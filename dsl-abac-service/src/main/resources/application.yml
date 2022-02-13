@@ -13,3 +13,6 @@ spring:
     expiration: 1800
     X-User-Id: true
     skip-token-validation: true
+logging:
+  level:
+    root: debug

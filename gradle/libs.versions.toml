@@ -1,24 +1,25 @@
 [versions]
 kotlin-all = "1.6.10"
-kotlin-extensions = "1.1.4"
+kotlin-extensions = "1.1.5"
 kotlinx-coroutines = "1.6.0-native-mt"
 
 spring-framework = "2.5.7"
-netty-server = "4.1.67.Final"
-abac = "1.0.2"
+netty-server = "4.1.73.Final"
+abac = "1.0.3"
 oauth2 = "5.6.1"
 
-r2dbc-dsl = "4.5.21"
+r2dbc-dsl = "4.5.22"
 r2dbc-postgres = "0.8.11.RELEASE"
-jdbc-postgres = "42.2.23"
+jdbc-postgres = "42.3.2"
 
 feign-client = "3.1.1"
 feign-slf4j = "8.18.0"
 logback = "1.2.3"
 
-liquibase = "4.6.2"
+liquibase = "4.7.1"
 openapi = "1.5.10"
 snake-yaml = "1.29"
+picocli = "4.6.1"
 
 test-junit = "4.13.2"
 test-reactor = "3.4.9"
@@ -42,7 +43,7 @@ postgres-jdbc = { module = "org.postgresql:postgresql", version.ref = "jdbc-post
 
 reactor-swagger = { module = "org.springdoc:springdoc-openapi-webflux-ui", version.ref = "openapi" }
 openapi = { module = "org.springdoc:springdoc-openapi-kotlin", version.ref = "openapi" }
-swagger-annotations = { module = "io.swagger.core.v3:swagger-annotations", version = "2.1.10" }
+swagger-annotations = { module = "io.swagger.core.v3:swagger-annotations", version = "2.1.12" }
 
 spring-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-framework"}
 junit = { module = "junit:junit", version.ref = "test-junit"}
@@ -60,10 +61,11 @@ liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liqui
 logback-core = { module = "ch.qos.logback:logback-core", version.ref = "logback" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 liquibase-yaml = { module = "org.yaml:snakeyaml", version.ref = "snake-yaml"}
+liquibase-picocli = { module = "info.picocli:picocli", version.ref = "picocli"}
 
 [bundles]
 kotlin = [ "kotlin-reflect", "kotlin-stdlib", "kotlin-extensions", "kotlin-coroutines" ]
 service = [ "webflux", "netty-codec", "abac-security", "reactor-dsl", "reactor-swagger", "openapi", "swagger-annotations", "oauth2-server" ]
 feign = [ "feign-webclient", "feign-cloud", "feign-spring", "feign-slf4j" ]
-liquibase = [ "liquibase-core", "logback-core", "logback-classic", "postgres-jdbc", "liquibase-yaml" ]
+liquibase = [ "liquibase-core", "logback-core", "logback-classic", "postgres-jdbc", "liquibase-yaml", "liquibase-picocli" ]
 test = [ "spring-test", "junit", "reactor-test", "testcontainers", "r2dbc-testcontainers", "jupiter-testcontainers" ]

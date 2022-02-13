@@ -1,6 +1,7 @@
 package io.github.sevenparadigms.dslabac.api
 
 import com.fasterxml.jackson.databind.JsonNode
+import io.github.sevenparadigms.dslabac.data.Jfolder
 import io.github.sevenparadigms.dslabac.data.Jobject
 import org.springframework.data.r2dbc.repository.query.Dsl
 import org.springframework.http.MediaType
@@ -14,6 +15,9 @@ import java.util.*
 @ReactiveFeignClient(name = "dsl-abac-service")
 @RequestMapping(path = ["/dsl-abac"])
 interface ObjectApi {
+    @GetMapping
+    fun folders(): Flux<Jfolder>
+
     @GetMapping(value = ["{jfolderId}"])
     fun findAll(@PathVariable jfolderId: UUID, dsl: Dsl): Flux<Jobject>
 

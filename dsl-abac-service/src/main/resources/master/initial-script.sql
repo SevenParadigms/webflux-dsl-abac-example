@@ -7,6 +7,7 @@ CREATE TABLE form
     jtree      jsonb                                                 NOT NULL,
     created_at timestamp with time zone DEFAULT timezone('utc'::text, CURRENT_TIMESTAMP)
 );
+CREATE INDEX form_jtree_idx ON form USING gin (jtree jsonb_path_ops);
 
 CREATE TABLE jfolder
 (
@@ -16,6 +17,7 @@ CREATE TABLE jfolder
     parent_id  uuid REFERENCES jfolder (id),
     created_at timestamp with time zone DEFAULT timezone('utc'::text, CURRENT_TIMESTAMP)
 );
+CREATE INDEX jfolder_jtree_idx ON jfolder USING gin (jtree jsonb_path_ops);
 
 CREATE TABLE jobject
 (
@@ -26,6 +28,8 @@ CREATE TABLE jobject
     tsv        tsvector,
     PRIMARY KEY (id, jfolder_id)
 ) PARTITION BY LIST (jfolder_id);
+CREATE INDEX jobject_jtree_idx ON jobject USING gin (jtree jsonb_path_ops);
+CREATE INDEX jobject_tsv_idx ON jobject USING rum (tsv rum_tsvector_ops);
 
 CREATE TABLE jobject_jobject
 (
@@ -35,6 +39,7 @@ CREATE TABLE jobject_jobject
     jtree     jsonb,
     parent_id uuid REFERENCES jobject_jobject (id)
 );
+CREATE INDEX jobject_jobject_jtree_idx ON jobject_jobject USING gin (jtree jsonb_path_ops);
 
 CREATE FUNCTION jfolder(p_name text) RETURNS uuid
     LANGUAGE plpgsql AS
