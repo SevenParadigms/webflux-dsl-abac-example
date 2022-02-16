@@ -1,6 +1,6 @@
 plugins {
-	checkstyle
 	`java-library`
+	checkstyle
 }
 
 subprojects {

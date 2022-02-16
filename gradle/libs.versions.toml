@@ -4,13 +4,13 @@ kotlin-extensions = "1.1.5"
 kotlinx-coroutines = "1.6.0-native-mt"
 
 spring-framework = "2.5.7"
-netty-server = "4.1.73.Final"
-abac = "1.0.3"
+netty-server = "4.1.74.Final"
+abac = "1.0.4"
 oauth2 = "5.6.1"
 
-r2dbc-dsl = "4.5.22"
+r2dbc-dsl = "4.5.23"
 r2dbc-postgres = "0.8.11.RELEASE"
-jdbc-postgres = "42.3.2"
+jdbc-postgres = "42.3.3"
 
 feign-client = "3.1.1"
 feign-slf4j = "8.18.0"
