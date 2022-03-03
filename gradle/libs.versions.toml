@@ -5,10 +5,12 @@ kotlinx-coroutines = "1.6.0-native-mt"
 
 spring-framework = "2.5.7"
 netty-server = "4.1.74.Final"
-abac = "1.1.0"
+abac = "1.1.1"
 oauth2 = "5.6.1"
+hazelcast-version = "5.0.2"
+hazelcast-kube = "1.0.1"
 
-r2dbc-dsl = "4.5.3"
+r2dbc-dsl = "4.6.0"
 r2dbc-postgres = "0.8.11.RELEASE"
 jdbc-postgres = "42.3.3"
 
@@ -34,8 +36,10 @@ kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor
 webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "spring-framework" }
 netty-codec = { module = "io.netty:netty-codec-http", version.ref = "netty-server" }
 transport = { module = "io.netty:netty-transport-native-epoll", version.ref = "netty-server" }
-abac-security = { module = "io.github.sevenparadigms:reactive-spring-abac-security", version.ref = "abac"}
-oauth2-server = { module = "org.springframework.security:spring-security-oauth2-resource-server", version.ref = "oauth2"}
+abac-security = { module = "io.github.sevenparadigms:reactive-spring-abac-security", version.ref = "abac" }
+oauth2-server = { module = "org.springframework.security:spring-security-oauth2-resource-server", version.ref = "oauth2" }
+hazelcast-server = { module = "com.hazelcast:hazelcast", version.ref = "hazelcast-version" }
+embedded-hazelcast = { module = "io.github.sevenparadigms:kubernetes-embedded-hazelcast", version.ref = "hazelcast-kube" }
 
 reactor-dsl = { module = "io.github.sevenparadigms:spring-data-r2dbc-dsl", version.ref = "r2dbc-dsl"}
 postgresql = { module = "io.r2dbc:r2dbc-postgresql", version.ref = "r2dbc-postgres"}
@@ -65,7 +69,7 @@ liquibase-picocli = { module = "info.picocli:picocli", version.ref = "picocli"}
 
 [bundles]
 kotlin = [ "kotlin-reflect", "kotlin-stdlib", "kotlin-extensions", "kotlin-coroutines" ]
-service = [ "webflux", "netty-codec", "abac-security", "reactor-dsl", "reactor-swagger", "openapi", "swagger-annotations", "oauth2-server" ]
+service = [ "webflux", "netty-codec", "abac-security", "reactor-dsl", "reactor-swagger", "openapi", "swagger-annotations", "oauth2-server", "hazelcast-server", "embedded-hazelcast" ]
 feign = [ "feign-webclient", "feign-cloud", "feign-spring", "feign-slf4j" ]
 liquibase = [ "liquibase-core", "logback-core", "logback-classic", "postgres-jdbc", "liquibase-yaml", "liquibase-picocli" ]
 test = [ "spring-test", "junit", "reactor-test", "testcontainers", "r2dbc-testcontainers", "jupiter-testcontainers" ]

@@ -1,6 +1,6 @@
 plugins {
+	 checkstyle
 	`java-library`
-	checkstyle
 }
 
 subprojects {
@@ -10,4 +10,9 @@ subprojects {
 
 java {
 	toolchain.languageVersion.set(JavaLanguageVersion.of(11))
+}
+
+repositories {
+	mavenLocal()
+	mavenCentral()
 }
