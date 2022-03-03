@@ -5,7 +5,7 @@ kotlinx-coroutines = "1.6.0-native-mt"
 
 spring-framework = "2.5.7"
 netty-server = "4.1.74.Final"
-abac = "1.1.2"
+abac = "1.1.3"
 oauth2 = "5.6.2"
 hazelcast-version = "5.0.2"
 hazelcast-kube = "1.0.2"

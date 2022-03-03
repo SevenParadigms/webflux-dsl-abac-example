@@ -1,5 +1,5 @@
 create extension if not exists "uuid-ossp";
-create extension if not exists rum;
+--create extension if not exists rum;
 
 CREATE TABLE form
 (
@@ -29,7 +29,7 @@ CREATE TABLE jobject
     PRIMARY KEY (id, jfolder_id)
 ) PARTITION BY LIST (jfolder_id);
 CREATE INDEX jobject_jtree_idx ON jobject USING gin (jtree jsonb_path_ops);
-CREATE INDEX jobject_tsv_idx ON jobject USING rum (tsv rum_tsvector_ops);
+--CREATE INDEX jobject_tsv_idx ON jobject USING rum (tsv rum_tsvector_ops);
 
 CREATE TABLE jobject_jobject
 (

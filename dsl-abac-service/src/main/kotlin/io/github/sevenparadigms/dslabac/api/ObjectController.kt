@@ -14,6 +14,7 @@ import java.util.*
 
 @RestController
 class ObjectController(val objectService: ObjectService) : ObjectApi {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     override fun folders(): Flux<Jfolder> = objectService.folders()
     @PreAuthorize("hasPermission(#dsl, 'findAll')")
     override fun findAll(@PathVariable jfolderId: UUID, dsl: Dsl) = objectService.findAll(jfolderId, dsl)
