@@ -5,12 +5,12 @@ kotlinx-coroutines = "1.6.0-native-mt"
 
 spring-framework = "2.5.7"
 netty-server = "4.1.75.Final"
-abac = "1.2.0"
+abac = "1.2.1"
 oauth2 = "5.6.2"
 hazelcast-version = "5.1.1"
 hazelcast-kube = "1.0.7"
 
-r2dbc-dsl = "4.6.13"
+r2dbc-dsl = "4.6.14"
 r2dbc-postgres = "0.8.12.RELEASE"
 jdbc-postgres = "42.3.3"
 
