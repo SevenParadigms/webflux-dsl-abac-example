@@ -1,31 +1,32 @@
 [versions]
 kotlin-all = "1.6.10"
-kotlin-extensions = "1.1.5"
+kotlin-extensions = "1.1.6"
 kotlinx-coroutines = "1.6.0-native-mt"
 
-spring-framework = "2.5.7"
+spring-framework = "2.6.5"
 netty-server = "4.1.75.Final"
-abac = "1.2.1"
+abac = "1.2.2"
 oauth2 = "5.6.2"
 hazelcast-version = "5.1.1"
-hazelcast-kube = "1.0.7"
+hazelcast-kube = "1.0.8"
 
-r2dbc-dsl = "4.6.14"
+r2dbc-dsl = "4.6.15"
+r2dbc-pool-v = "0.9.0.RELEASE"
 r2dbc-postgres = "0.8.12.RELEASE"
 jdbc-postgres = "42.3.3"
 
-feign-client = "3.1.1"
+feign-client = "3.2.0"
 feign-slf4j = "8.18.0"
-logback = "1.2.3"
+logback = "1.2.11"
 
-liquibase = "4.7.1"
-openapi = "1.5.10"
-snake-yaml = "1.29"
-picocli = "4.6.1"
+liquibase = "4.9.0"
+openapi = "1.6.6"
+snake-yaml = "1.30"
+picocli = "4.6.3"
 
 test-junit = "4.13.2"
-test-reactor = "3.4.9"
-test-containers = "1.16.2"
+test-reactor = "3.4.16"
+test-containers = "1.16.3"
 
 [libraries]
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-all" }
@@ -42,6 +43,7 @@ hazelcast-server = { module = "com.hazelcast:hazelcast", version.ref = "hazelcas
 embedded-hazelcast = { module = "io.github.sevenparadigms:kubernetes-embedded-hazelcast", version.ref = "hazelcast-kube" }
 
 reactor-dsl = { module = "io.github.sevenparadigms:spring-data-r2dbc-dsl", version.ref = "r2dbc-dsl"}
+dsl-pool = { module = "io.r2dbc:r2dbc-pool", version.ref = "r2dbc-pool-v"}
 postgresql = { module = "io.r2dbc:r2dbc-postgresql", version.ref = "r2dbc-postgres"}
 postgres-jdbc = { module = "org.postgresql:postgresql", version.ref = "jdbc-postgres"}
 
@@ -69,7 +71,7 @@ liquibase-picocli = { module = "info.picocli:picocli", version.ref = "picocli"}
 
 [bundles]
 kotlin = [ "kotlin-reflect", "kotlin-stdlib", "kotlin-extensions", "kotlin-coroutines" ]
-service = [ "webflux", "netty-codec", "abac-security", "reactor-dsl", "reactor-swagger", "openapi", "swagger-annotations", "oauth2-server", "hazelcast-server", "embedded-hazelcast" ]
+service = [ "webflux", "netty-codec", "abac-security", "reactor-dsl", "dsl-pool", "reactor-swagger", "openapi", "swagger-annotations", "oauth2-server", "hazelcast-server", "embedded-hazelcast" ]
 feign = [ "feign-webclient", "feign-cloud", "feign-spring", "feign-slf4j" ]
 liquibase = [ "liquibase-core", "logback-core", "logback-classic", "postgres-jdbc", "liquibase-yaml", "liquibase-picocli" ]
 test = [ "spring-test", "junit", "reactor-test", "testcontainers", "r2dbc-testcontainers", "jupiter-testcontainers" ]
