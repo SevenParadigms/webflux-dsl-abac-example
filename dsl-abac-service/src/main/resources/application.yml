@@ -9,8 +9,8 @@ spring:
     dsl:
       cacheManager: true
       cache:
-        FolderRepository.expireAfterAccess: 3600000
-        ObjectRepository.expireAfterAccess: 600000
+        Jfolder.expireAfterAccess: 3600000
+        Jobject.expireAfterAccess: 600000
   main:
     allow-bean-definition-overriding: true
   security:
