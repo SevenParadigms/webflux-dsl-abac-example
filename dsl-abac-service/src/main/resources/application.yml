@@ -26,4 +26,4 @@ logging:
   level:
     root: debug
     com.hazelcast.jet.impl: error
-    io.r2dbc.postgresql,client: error
+    io.r2dbc.postgresql.client: error
