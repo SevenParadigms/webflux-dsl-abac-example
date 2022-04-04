@@ -5,5 +5,5 @@ To run liquibase migration execute `gradle update` in `dsl-abac-service` folder
 To get bearer token from /auth send:
 {
 "login": "admin",
-"password": "passwore"
+"password": "psw"
 }
