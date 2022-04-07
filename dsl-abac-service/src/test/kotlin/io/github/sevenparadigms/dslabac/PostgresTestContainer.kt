@@ -1,4 +1,4 @@
-package io.github.sevenparadigms.dslabac.testing
+package io.github.sevenparadigms.dslabac
 
 import com.github.dockerjava.api.model.ExposedPort
 import com.github.dockerjava.api.model.HostConfig

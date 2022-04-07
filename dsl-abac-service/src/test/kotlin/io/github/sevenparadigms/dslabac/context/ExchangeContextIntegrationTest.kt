@@ -1,7 +1,7 @@
-package io.github.sevenparadigms.dslabac.context.opaque
+package io.github.sevenparadigms.dslabac.context
 
 import io.github.sevenparadigms.abac.Constants
-import io.github.sevenparadigms.dslabac.testing.opaque.AbstractIntegrationTest
+import io.github.sevenparadigms.dslabac.testing.AbstractIntegrationTest
 import io.github.sevenparadigms.dslabac.data.Jobject
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders

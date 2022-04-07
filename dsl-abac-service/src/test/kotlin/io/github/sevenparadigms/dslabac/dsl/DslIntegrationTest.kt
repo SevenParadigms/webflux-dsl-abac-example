@@ -1,8 +1,8 @@
-package io.github.sevenparadigms.dslabac.dsl.jwt
+package io.github.sevenparadigms.dslabac.dsl
 
 import io.github.sevenparadigms.abac.Constants
 import io.github.sevenparadigms.dslabac.data.Jobject
-import io.github.sevenparadigms.dslabac.testing.jwt.AbstractIntegrationTest
+import io.github.sevenparadigms.dslabac.testing.AbstractIntegrationTest
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions

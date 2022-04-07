@@ -1,8 +1,8 @@
-package io.github.sevenparadigms.dslabac.testing.jwt
+package io.github.sevenparadigms.dslabac.testing
 
 import io.github.sevenparadigms.abac.security.auth.data.UserPrincipal
 import io.github.sevenparadigms.abac.security.context.ExchangeContext
-import io.github.sevenparadigms.dslabac.testing.PostgresTestContainer
+import io.github.sevenparadigms.dslabac.PostgresTestContainer
 import kotlinx.coroutines.reactive.awaitLast
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterAll

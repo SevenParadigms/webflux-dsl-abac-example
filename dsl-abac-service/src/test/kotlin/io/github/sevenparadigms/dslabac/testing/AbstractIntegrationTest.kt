@@ -1,10 +1,10 @@
-package io.github.sevenparadigms.dslabac.testing.jwt
+package io.github.sevenparadigms.dslabac.testing
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.sevenparadigms.abac.security.auth.data.UserPrincipal
 import io.github.sevenparadigms.abac.security.context.ExchangeContext
 import io.github.sevenparadigms.dslabac.data.FolderRepository
-import io.github.sevenparadigms.dslabac.testing.PostgresTestContainer
+import io.github.sevenparadigms.dslabac.PostgresTestContainer
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll

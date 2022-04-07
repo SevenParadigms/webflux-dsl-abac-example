@@ -1,7 +1,7 @@
-package io.github.sevenparadigms.dslabac.context.opaque.concurrent
+package io.github.sevenparadigms.dslabac.context.concurrent
 
 import io.github.sevenparadigms.abac.Constants
-import io.github.sevenparadigms.dslabac.testing.opaque.AbstractIntegrationMultithreadingTest
+import io.github.sevenparadigms.dslabac.testing.AbstractIntegrationMultithreadingTest
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
 import reactor.core.publisher.Flux
