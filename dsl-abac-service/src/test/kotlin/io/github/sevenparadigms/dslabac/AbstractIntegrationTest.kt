@@ -1,10 +1,9 @@
-package io.github.sevenparadigms.dslabac.testing
+package io.github.sevenparadigms.dslabac
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.sevenparadigms.abac.security.auth.data.UserPrincipal
 import io.github.sevenparadigms.abac.security.context.ExchangeContext
 import io.github.sevenparadigms.dslabac.data.FolderRepository
-import io.github.sevenparadigms.dslabac.PostgresTestContainer
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
@@ -25,7 +24,7 @@ import java.util.*
 abstract class AbstractIntegrationTest : PostgresTestContainer() {
 
     @LocalServerPort
-    protected var port = 0
+    protected var port = 55555
     protected val correctIp = "192.168.2.207"
     protected val nonCorrectIp = "127.0.0.1"
     protected val testUsersPassword = "passwore"
@@ -51,7 +50,7 @@ abstract class AbstractIntegrationTest : PostgresTestContainer() {
             host = NetworkInterface.getNetworkInterfaces().asIterator().next().inetAddresses.asIterator()
                 .next().hostAddress
             webClient = WebClient.builder().clientConnector(ReactorClientHttpConnector())
-                .baseUrl("http://$host:$port/").build()
+                .baseUrl("http://localhost:$port/").build()
             adminToken = getToken("admin")
             userToken = getToken("user")
             jfolderId = folderRepository.findFolderIdByJtreeName("organization").awaitFirst()

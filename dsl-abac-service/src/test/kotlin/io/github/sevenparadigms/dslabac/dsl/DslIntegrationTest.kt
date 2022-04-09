@@ -1,12 +1,18 @@
 package io.github.sevenparadigms.dslabac.dsl
 
 import io.github.sevenparadigms.abac.Constants
+import io.github.sevenparadigms.abac.security.abac.data.AbacControlContext
+import io.github.sevenparadigms.abac.security.abac.data.AbacEnvironment
+import io.github.sevenparadigms.abac.security.abac.data.AbacRuleRepository
+import io.github.sevenparadigms.abac.security.abac.data.AbacSubject
 import io.github.sevenparadigms.dslabac.data.Jobject
-import io.github.sevenparadigms.dslabac.testing.AbstractIntegrationTest
+import io.github.sevenparadigms.dslabac.AbstractIntegrationTest
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.r2dbc.repository.query.Dsl
 import org.springframework.http.HttpHeaders
 import org.springframework.r2dbc.core.awaitOne
 import org.springframework.web.reactive.function.BodyInserters
@@ -140,8 +146,15 @@ class DslIntegrationTest : AbstractIntegrationTest() {
             .verify()
     }
 
+    @Autowired
+    protected lateinit var abacRuleRepository: AbacRuleRepository
     @Test
     fun `findAll test case jsonb not equals`() {
+        val context = AbacControlContext(
+            AbacSubject("admin", listOf("ROLE_ADMIN").toSet()), Dsl.create("jtree.name!=Acme doc").sorting("id:desc"),
+            "findAll", AbacEnvironment(ip = "123")
+        )
+
         val flux = webClient.get()
             .uri("dsl-abac/$jfolderId?query=jtree.name!=Acme doc&sort=id:desc")
             .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)

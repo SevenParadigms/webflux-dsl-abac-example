@@ -1,7 +1,7 @@
 package io.github.sevenparadigms.dslabac.api
 
 import io.github.sevenparadigms.abac.Constants
-import io.github.sevenparadigms.dslabac.testing.AbstractIntegrationTest
+import io.github.sevenparadigms.dslabac.AbstractIntegrationTest
 import io.github.sevenparadigms.dslabac.data.Jobject
 import org.junit.FixMethodOrder
 import org.junit.jupiter.api.Test
@@ -14,7 +14,6 @@ import reactor.test.StepVerifier
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ObjectApiIntegrationTest : AbstractIntegrationTest() {
-
     @Test
     fun aSave() {
         val jobject = Jobject(

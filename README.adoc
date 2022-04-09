@@ -8,6 +8,6 @@ To get bearer token from /auth send:
 ----
 {
   "login": "admin/user",
-  "password": "passwore/psw"
+  "password": "passwore"
 }
 ----

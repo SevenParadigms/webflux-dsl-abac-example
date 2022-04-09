@@ -8,9 +8,9 @@ spring:
       maxSize: 20
     dsl:
       cacheManager: true
-      cache:
-        Jfolder.expireAfterAccess: 3600000
-        Jobject.expireAfterAccess: 600000
+  cache:
+    Jfolder.expireAfterAccess: 3600000
+    Jobject.expireAfterAccess: 600000
   main:
     allow-bean-definition-overriding: true
   security:
