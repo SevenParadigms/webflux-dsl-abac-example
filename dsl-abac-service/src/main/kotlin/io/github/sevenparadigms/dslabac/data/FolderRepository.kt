@@ -13,6 +13,6 @@ interface FolderRepository: R2dbcRepository<Jfolder, UUID>{
 }
 
 data class Jfolder(
-    val id: UUID? = null,
-    val jtree: JsonNode
+    var id: UUID? = null,
+    var jtree: JsonNode
 ) : Serializable

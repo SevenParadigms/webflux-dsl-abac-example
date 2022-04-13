@@ -212,3 +212,21 @@ values('Test Rule', 'Dsl', 'action == ''findAll'' and subject.roles.contains(''R
       ('Query jtree not null Rule', 'Dsl', 'action == ''findAll'' and subject.roles.contains(''ROLE_ADMIN'')', 'domainObject.query == ''!@jtree'' and domainObject.fields ==''id''  and domainObject.sort == ''id:desc'''),
       ('Query equals jsonb field Rule', 'Dsl', 'action == ''findAll'' and subject.roles.contains(''ROLE_ADMIN'')', 'domainObject.query == ''jtree.name==Acme doc'' and domainObject.sort == ''id:desc'''),
       ('Query equals jsonb field in Rule', 'Dsl', 'action == ''findAll'' and subject.roles.contains(''ROLE_ADMIN'')', 'domainObject.query == ''jtree.name^^Acme doc'' and domainObject.sort == ''id:desc''');
+
+CREATE TABLE feature
+(
+    id                  uuid                     DEFAULT uuid_generate_v1mc() NOT NULL,
+    "group"             text                     NULL,
+    version             integer                  NULL,
+    version_ann         timestamp with time zone NULL,
+    custom_version      integer                  NULL,
+    created_at          timestamp with time zone NULL,
+    created_ann         timestamp with time zone NULL,
+    custom_create       timestamp                NULL,
+    custom_update       timestamp with time zone NULL,
+    attr_now            timestamp                NULL,
+    equality            integer                  NULL,
+    custom_equality     text                     NULL,
+    readonly            text                     NULL,
+    custom_readonly     integer                  NULL
+);

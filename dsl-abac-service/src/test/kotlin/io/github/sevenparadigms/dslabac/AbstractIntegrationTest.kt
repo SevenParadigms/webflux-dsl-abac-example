@@ -3,6 +3,7 @@ package io.github.sevenparadigms.dslabac
 import io.github.sevenparadigms.abac.security.auth.data.UserPrincipal
 import io.github.sevenparadigms.abac.security.context.ExchangeContext
 import io.github.sevenparadigms.dslabac.data.FolderRepository
+import io.github.sevenparadigms.dslabac.feature.FeatureRepository
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
@@ -34,6 +35,9 @@ abstract class AbstractIntegrationTest : PostgresTestContainer() {
 
     @Autowired
     protected lateinit var exchangeContext: ExchangeContext
+
+    @Autowired
+    protected lateinit var featureRepository: FeatureRepository
 
     protected lateinit var webClient: WebClient
     protected lateinit var adminToken: String

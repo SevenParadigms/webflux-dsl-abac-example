@@ -13,7 +13,7 @@ interface ObjectRepository: R2dbcRepository<Jobject, UUID> {
 }
 
 data class Jobject(
-    val id: UUID? = null,
-    val jtree: JsonNode,
+    var id: UUID? = null,
+    var jtree: JsonNode,
     var jfolderId: UUID? = null
 ) : Serializable
