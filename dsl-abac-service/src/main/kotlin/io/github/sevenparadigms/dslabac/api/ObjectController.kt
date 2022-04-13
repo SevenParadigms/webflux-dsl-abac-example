@@ -19,6 +19,7 @@ class ObjectController(val objectService: ObjectService) : ObjectApi {
     @PreAuthorize("hasPermission(#dsl, 'findAll')")
     override fun findAll(@PathVariable jfolderId: UUID, dsl: Dsl) = objectService.findAll(jfolderId, dsl)
     override fun save(@RequestBody jobject: Jobject) = objectService.save(jobject)
+    @PreAuthorize("hasRole('ROLE_USER')")
     override fun delete(dsl: Dsl) = objectService.delete(dsl).then(ServerResponse.ok().build())
     override fun listener() = objectService.listener()
     override fun context(): Flux<Any> = objectService.context()

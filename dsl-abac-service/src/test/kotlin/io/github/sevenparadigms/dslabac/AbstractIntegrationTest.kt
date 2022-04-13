@@ -1,12 +1,12 @@
 package io.github.sevenparadigms.dslabac
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.sevenparadigms.abac.security.auth.data.UserPrincipal
 import io.github.sevenparadigms.abac.security.context.ExchangeContext
 import io.github.sevenparadigms.dslabac.data.FolderRepository
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
+import org.sevenparadigms.kotlin.common.objectToJson
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
@@ -16,7 +16,6 @@ import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBody
 import reactor.core.publisher.Mono
-import java.net.NetworkInterface
 import java.util.*
 
 @TestPropertySource("classpath:application-jwt.properties")
@@ -29,7 +28,6 @@ abstract class AbstractIntegrationTest : PostgresTestContainer() {
     protected val nonCorrectIp = "127.0.0.1"
     protected val testUsersPassword = "passwore"
     protected var jfolderId: UUID? = null
-    protected var jobjectId: UUID? = null
 
     @Autowired
     protected lateinit var folderRepository: FolderRepository
@@ -40,26 +38,21 @@ abstract class AbstractIntegrationTest : PostgresTestContainer() {
     protected lateinit var webClient: WebClient
     protected lateinit var adminToken: String
     protected lateinit var userToken: String
-    protected lateinit var host: String
-    protected lateinit var objectMapper: ObjectMapper
 
     @BeforeAll
     fun setup() {
         runBlocking {
-            objectMapper = ObjectMapper()
-            host = NetworkInterface.getNetworkInterfaces().asIterator().next().inetAddresses.asIterator()
-                .next().hostAddress
             webClient = WebClient.builder().clientConnector(ReactorClientHttpConnector())
                 .baseUrl("http://localhost:$port/").build()
-            adminToken = getToken("admin")
-            userToken = getToken("user")
+            adminToken = getToken("admin").objectToJson().get("access_token").asText()
+            userToken = getToken("user").objectToJson().get("access_token").asText()
             jfolderId = folderRepository.findFolderIdByJtreeName("organization").awaitFirst()
         }
     }
 
     protected suspend fun getToken(login: String): String {
         return webClient.post()
-            .uri("auth")
+            .uri("token")
             .body(BodyInserters.fromPublisher(Mono.just(createUser(login)), UserPrincipal::class.java))
             .retrieve()
             .awaitBody()

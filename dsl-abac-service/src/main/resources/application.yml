@@ -11,6 +11,7 @@ spring:
   cache:
     Jfolder.expireAfterAccess: 3600000
     Jobject.expireAfterAccess: 600000
+    jwt.expireAfterWrite: 300000
   main:
     allow-bean-definition-overriding: true
   security:

@@ -19,7 +19,6 @@ class ExchangeContextIntegrationTest : AbstractIntegrationTest() {
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
-            .expectSubscription()
             .expectNextMatches { exchangeContext.getRemoteIp("admin") == correctIp }
             .thenCancel()
             .verify()
@@ -35,7 +34,6 @@ class ExchangeContextIntegrationTest : AbstractIntegrationTest() {
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
-            .expectSubscription()
             .expectNextMatches {
                 exchangeContext.getHeaders("admin")!![Constants.AUTHORIZE_IP]!!.first() == correctIp &&
                         exchangeContext.getHeaders("admin")!![HttpHeaders.AUTHORIZATION]!!.first() == Constants.BEARER + adminToken
@@ -54,7 +52,6 @@ class ExchangeContextIntegrationTest : AbstractIntegrationTest() {
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
-            .expectSubscription()
             .expectNextMatches { exchangeContext.getRequest("admin") != null }
             .thenCancel()
             .verify()
@@ -70,24 +67,7 @@ class ExchangeContextIntegrationTest : AbstractIntegrationTest() {
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
-            .expectSubscription()
             .expectNextMatches { exchangeContext.getResponse("admin") != null }
-            .thenCancel()
-            .verify()
-    }
-
-    @Test
-    fun getSession() {
-        val flux = webClient.get()
-            .uri("dsl-abac/$jfolderId?sort=id:desc")
-            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
-            .header(Constants.AUTHORIZE_IP, correctIp)
-            .retrieve()
-            .bodyToFlux(Jobject::class.java)
-
-        StepVerifier.create(flux)
-            .expectSubscription()
-            .expectNextMatches { exchangeContext.getSession("admin") != null }
             .thenCancel()
             .verify()
     }
@@ -102,7 +82,6 @@ class ExchangeContextIntegrationTest : AbstractIntegrationTest() {
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
-            .expectSubscription()
             .expectNextMatches { exchangeContext.getToken("admin") == adminToken }
             .thenCancel()
             .verify()
@@ -118,7 +97,6 @@ class ExchangeContextIntegrationTest : AbstractIntegrationTest() {
             .bodyToFlux(Jobject::class.java)
 
         StepVerifier.create(flux)
-            .expectSubscription()
             .expectNextMatches { exchangeContext.getUser("admin") != null }
             .thenCancel()
             .verify()
