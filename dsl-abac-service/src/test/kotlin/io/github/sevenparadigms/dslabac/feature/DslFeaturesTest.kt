@@ -111,18 +111,18 @@ class DslFeaturesTest : AbstractIntegrationTest() {
         assertNotNull(feature.id)
 
         // change feature in cache and get it
-        featureRepository.put(feature.copy(group = ExpressionParserCache.INSTANCE.parseExpression("a==6")))
+        featureRepository.cache().put(feature.copy(group = ExpressionParserCache.INSTANCE.parseExpression("a==6")))
         featureRepository.findById(feature.id!!)
             .`as`(StepVerifier::create)
             .consumeNextWith { actual -> assertEquals(actual.group, ExpressionParserCache.INSTANCE.parseExpression("a==6")) }
             .verifyComplete()
 
         // evict cache, get real feature from database and from cache
-        featureRepository.evict(feature.id!!).findById(feature.id!!)
+        featureRepository.cache().evict(feature.id).findById(feature.id!!)
             .`as`(StepVerifier::create)
             .consumeNextWith { actual -> assertEquals(actual.group, ExpressionParserCache.INSTANCE.parseExpression("a==5")) }
             .verifyComplete()
-        assertEquals(featureRepository.get(feature.id!!)?.group?.expressionString,
+        assertEquals(featureRepository.cache().get(feature.id)?.group?.expressionString,
             ExpressionParserCache.INSTANCE.parseExpression("a==5").expressionString)
     }
 }
