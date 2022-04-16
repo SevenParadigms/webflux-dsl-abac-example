@@ -17,7 +17,6 @@ class DslFeaturesTest : AbstractIntegrationTest() {
             readonly = "r/o",
             customReadonly = 6
         )
-
         // check initial values by name, annotation and properties
         featureRepository.save(feature)
             .`as`(StepVerifier::create)
@@ -44,17 +43,18 @@ class DslFeaturesTest : AbstractIntegrationTest() {
                 run {
                     assertEquals(actual.version, 2)
                     assertEquals(actual.customVersion, 2)
+                    assertTrue(!DslUtils.compareDateTime(actual.versionAnn, previous.versionAnn))
                     assertTrue(!DslUtils.compareDateTime(actual.customUpdate, previous.customUpdate))
                     assertTrue(!DslUtils.compareDateTime(actual.attrNow, previous.attrNow))
                 }
             }
             .verifyComplete()
 
-        // other values do not changed from start
+        // other values do not changed
         assertEquals(feature.createdAt, previous.createdAt)
         assertTrue(DslUtils.compareDateTime(feature.createdAnn, previous.createdAnn))
         assertTrue(DslUtils.compareDateTime(feature.customCreate, previous.customCreate))
-        assertEquals(feature.group, ExpressionParserCache.INSTANCE.parseExpression("a==5"))
+        assertEquals(feature.group, ExpressionParserCache.INSTANCE.parseExpression("a==5")) // cached
         assertEquals(feature.equality, 5)
         assertEquals(feature.customEquality, "fife")
         assertEquals(feature.readonly, "r/o")
@@ -63,14 +63,16 @@ class DslFeaturesTest : AbstractIntegrationTest() {
         //try change readonly values and always get old value
         feature.readonly = "r/o - changed!!!"
         featureRepository.save(feature).block()
-        featureRepository.findById(feature.id!!)
+        featureRepository.cache().evictAll().findById(feature.id!!)
             .`as`(StepVerifier::create)
             .consumeNextWith { actual -> assertEquals(actual.readonly, "r/o") }
             .verifyComplete()
         feature.readonly = "r/o"     // in model value restored also
 
         feature.customReadonly = 6 + 111
-        featureRepository.save(feature).`as`(StepVerifier::create)
+        featureRepository.save(feature).block()
+        featureRepository.cache().evictAll().findById(feature.id!!)
+            .`as`(StepVerifier::create)
             .consumeNextWith { actual -> assertEquals(actual.customReadonly, 6) }
             .verifyComplete()
         assertEquals(feature.customReadonly, 6)     // in model value restored also
@@ -80,7 +82,6 @@ class DslFeaturesTest : AbstractIntegrationTest() {
         featureRepository.save(feature) //
             .`as`(StepVerifier::create) //
             .expectError(IllegalStateException::class.java)
-
         featureRepository.findById(feature.id!!)
             .`as`(StepVerifier::create)
             .consumeNextWith { actual -> assertEquals(actual.equality, 5) }
@@ -90,7 +91,6 @@ class DslFeaturesTest : AbstractIntegrationTest() {
         featureRepository.save(feature) //
             .`as`(StepVerifier::create) //
             .expectError(IllegalStateException::class.java)
-
         featureRepository.findById(feature.id!!)
             .`as`(StepVerifier::create)
             .consumeNextWith { actual -> assertEquals(actual.customEquality, "fife") }
@@ -117,7 +117,7 @@ class DslFeaturesTest : AbstractIntegrationTest() {
             .consumeNextWith { actual -> assertEquals(actual.group, ExpressionParserCache.INSTANCE.parseExpression("a==6")) }
             .verifyComplete()
 
-        // evict cache, get real feature from database and from cache
+        // evict cache and get real feature from database and from cache
         featureRepository.cache().evict(feature.id).findById(feature.id!!)
             .`as`(StepVerifier::create)
             .consumeNextWith { actual -> assertEquals(actual.group, ExpressionParserCache.INSTANCE.parseExpression("a==5")) }
