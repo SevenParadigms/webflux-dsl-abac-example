@@ -118,14 +118,15 @@ class DslFeaturesTest : AbstractIntegrationTest() {
             .consumeNextWith { actual -> assertEquals(actual.group, ExpressionParserCache.INSTANCE.parseExpression("a==6")) }
             .verifyComplete()
 
-        // evict cache and get real feature from database and from cache
+        // evict cache and get real feature from database and after from cache
         featureRepository
             .cache().evict(feature.id)
             .findById(feature.id!!)
             .`as`(StepVerifier::create)
             .consumeNextWith { actual -> assertEquals(actual.group, ExpressionParserCache.INSTANCE.parseExpression("a==5")) }
             .verifyComplete()
-        assertEquals(featureRepository.cache().get(feature.id)?.group?.expressionString,
+
+        assertEquals(featureRepository.cache()[feature.id]?.group?.expressionString,
             ExpressionParserCache.INSTANCE.parseExpression("a==5").expressionString)
     }
 }
