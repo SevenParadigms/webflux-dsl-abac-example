@@ -34,14 +34,10 @@ open class PostgresTestContainer {
 
     companion object {
         @JvmStatic
-        private val postgresContainer = createContainer()
-
-        @JvmStatic
         @Container
-        private val postgresR2DBCContainer = PostgreSQLR2DBCDatabaseContainer(postgresContainer)
-
-        private fun createContainer(): KContainer =
-            KContainer(DockerImageName.parse("jordemort/postgres-rum:latest").asCompatibleSubstituteFor("postgres"))
+        private val postgresContainer = PostgreSQLR2DBCDatabaseContainer(
+            KContainer(DockerImageName.parse("jordemort/postgres-rum:latest")
+                .asCompatibleSubstituteFor("postgres"))
                 .withDatabaseName("test-db")
                 .withUsername("postgres")
                 .withPassword("postgres")
@@ -55,5 +51,6 @@ open class PostgresTestContainer {
                     MountableFile.forClasspathResource("init.sql"),
                     "/docker-entrypoint-initdb.d/"
                 )
+        )
     }
 }

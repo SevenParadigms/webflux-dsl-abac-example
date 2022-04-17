@@ -28,7 +28,7 @@ picocli = "4.6.3"
 
 test-junit = "4.13.2"
 test-reactor = "3.4.17"
-test-containers = "1.17.1"
+test-containers = "1.16.3"
 
 [libraries]
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-all" }
