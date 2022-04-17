@@ -19,16 +19,13 @@ import org.testcontainers.utility.MountableFile
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 open class PostgresTestContainer {
-
-    internal class KContainer(image: DockerImageName) : PostgreSQLContainer<KContainer>(image)
-
     internal lateinit var postgresDatabaseClient: DatabaseClient
 
     @Value("\${spring.security.abac.url}")
     private lateinit var databaseUrl: String
 
     @BeforeAll
-    internal fun initApp() {
+    internal fun initDatabaseTestClient() {
         postgresDatabaseClient = DatabaseClient.create(ConnectionFactories.get(databaseUrl))
     }
 
@@ -36,7 +33,7 @@ open class PostgresTestContainer {
         @JvmStatic
         @Container
         private val postgresContainer = PostgreSQLR2DBCDatabaseContainer(
-            KContainer(DockerImageName.parse("jordemort/postgres-rum:latest")
+            PostgreSQLContainer(DockerImageName.parse("jordemort/postgres-rum:latest")
                 .asCompatibleSubstituteFor("postgres"))
                 .withDatabaseName("test-db")
                 .withUsername("postgres")
