@@ -51,7 +51,7 @@ class DslFeaturesTest : AbstractIntegrationTest() {
             .verifyComplete()
 
         // other values do not changed
-        assertEquals(feature.createdAt, previous.createdAt)
+        assertTrue(DslUtils.compareDateTime(feature.createdAt, previous.createdAt))
         assertTrue(DslUtils.compareDateTime(feature.createdAnn, previous.createdAnn))
         assertTrue(DslUtils.compareDateTime(feature.customCreate, previous.customCreate))
         assertEquals(feature.group, ExpressionParserCache.INSTANCE.parseExpression("a==5")) // cached

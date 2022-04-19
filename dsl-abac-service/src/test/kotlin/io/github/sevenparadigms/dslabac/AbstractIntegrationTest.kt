@@ -7,8 +7,10 @@ import io.github.sevenparadigms.dslabac.feature.FeatureRepository
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
+import org.sevenparadigms.cache.hazelcast.HazelcastCacheConfiguration
 import org.sevenparadigms.kotlin.common.objectToJson
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
@@ -21,6 +23,7 @@ import java.util.*
 
 @TestPropertySource("classpath:application-jwt.properties")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ImportAutoConfiguration(HazelcastCacheConfiguration::class)
 abstract class AbstractIntegrationTest : PostgresTestContainer() {
 
     @LocalServerPort
