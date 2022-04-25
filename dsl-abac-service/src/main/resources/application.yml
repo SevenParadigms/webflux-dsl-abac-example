@@ -1,7 +1,14 @@
 hazelcast:
   timeoutMinutes: 30
 
+test:
+  topic: embedded-test-topic
+
 spring:
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+      group-id: baeldung
   r2dbc:
     url: r2dbc:postgresql://postgres:postgres@localhost/dsl_abac?schema=public
     pool:

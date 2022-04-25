@@ -9,6 +9,7 @@ abac = "1.3.7"
 oauth2 = "5.6.2"
 hazelcast-version = "5.1.1"
 hazelcast-kube = "1.1.7"
+kafka = "2.8.4"
 
 r2dbc-dsl = "4.7.7"
 r2dbc-pool-v = "0.9.0.RELEASE"
@@ -29,6 +30,8 @@ picocli = "4.6.3"
 test-junit = "4.13.2"
 test-reactor = "3.4.17"
 test-containers = "1.16.3"
+spring-test = "2.6.6"
+test-kafka = "1.16.2"
 
 [libraries]
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-all" }
@@ -43,6 +46,7 @@ abac-security = { module = "io.github.sevenparadigms:reactive-spring-abac-securi
 oauth2-server = { module = "org.springframework.security:spring-security-oauth2-resource-server", version.ref = "oauth2" }
 hazelcast-server = { module = "com.hazelcast:hazelcast", version.ref = "hazelcast-version" }
 embedded-hazelcast = { module = "io.github.sevenparadigms:kubernetes-embedded-hazelcast", version.ref = "hazelcast-kube" }
+kafka-spring = { module = "org.springframework.kafka:spring-kafka", version.ref = "kafka" }
 
 reactor-dsl = { module = "io.github.sevenparadigms:spring-data-r2dbc-dsl", version.ref = "r2dbc-dsl"}
 dsl-pool = { module = "io.r2dbc:r2dbc-pool", version.ref = "r2dbc-pool-v"}
@@ -61,6 +65,8 @@ testcontainers = { module = "org.testcontainers:postgresql", version.ref = "test
 r2dbc-testcontainers = { module = "org.testcontainers:r2dbc", version.ref = "test-containers" }
 jupiter-testcontainers = { module = "org.testcontainers:junit-jupiter", version.ref = "test-containers" }
 reactor-test = { module = "io.projectreactor:reactor-test", version.ref = "test-reactor" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-test" }
+kafka-testcontainers = { module = "org.testcontainers:kafka", version.ref = "test-kafka" }
 
 feign-webclient = { module = "com.playtika.reactivefeign:feign-reactor-webclient", version.ref = "feign-client" }
 feign-cloud = { module = "com.playtika.reactivefeign:feign-reactor-cloud", version.ref = "feign-client" }
@@ -75,7 +81,7 @@ liquibase-picocli = { module = "info.picocli:picocli", version.ref = "picocli"}
 
 [bundles]
 kotlin = [ "kotlin-reflect", "kotlin-stdlib", "kotlin-extensions", "kotlin-coroutines" ]
-service = [ "webflux", "netty-codec", "abac-security", "reactor-dsl", "dsl-pool", "dsl-spi", "data-commons", "data-relation", "reactor-swagger", "openapi", "swagger-annotations", "oauth2-server", "hazelcast-server", "embedded-hazelcast" ]
+service = [ "webflux", "netty-codec", "abac-security", "reactor-dsl", "dsl-pool", "dsl-spi", "data-commons", "data-relation", "reactor-swagger", "openapi", "swagger-annotations", "oauth2-server", "hazelcast-server", "embedded-hazelcast", "kafka-spring" ]
 feign = [ "feign-webclient", "feign-cloud", "feign-spring", "feign-slf4j" ]
 liquibase = [ "liquibase-core", "logback-core", "logback-classic", "postgres-jdbc", "liquibase-yaml", "liquibase-picocli" ]
-test = [ "spring-test", "junit", "reactor-test", "testcontainers", "r2dbc-testcontainers", "jupiter-testcontainers" ]
+test = [ "spring-test", "junit", "reactor-test", "testcontainers", "r2dbc-testcontainers", "jupiter-testcontainers", "spring-boot-starter-test", "kafka-testcontainers" ]
