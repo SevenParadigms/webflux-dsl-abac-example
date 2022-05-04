@@ -7,9 +7,11 @@ import io.github.sevenparadigms.dslabac.data.Jobject
 import io.github.sevenparadigms.dslabac.data.ObjectRepository
 import org.sevenparadigms.kotlin.common.objectToJson
 import org.springframework.data.r2dbc.repository.query.Dsl
+import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import java.util.*
 
 @Service
@@ -42,5 +44,9 @@ class ObjectService(
             ExchangeHolder.getUser()
         )
             .flatMap { Flux.fromIterable(listOf(it.t1, it.t2, it.t3, it.t4, it.t5, it.t6, it.t7)) }
+    }
+
+    fun current(): Mono<User> {
+        return ExchangeHolder.getUser()
     }
 }

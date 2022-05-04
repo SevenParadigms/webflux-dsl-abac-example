@@ -5,6 +5,7 @@ import io.github.sevenparadigms.dslabac.AbstractIntegrationTest
 import io.github.sevenparadigms.dslabac.data.Jobject
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
+import org.springframework.security.core.userdetails.User
 import reactor.test.StepVerifier
 
 class ExchangeContextIntegrationTest : AbstractIntegrationTest() {
@@ -98,6 +99,20 @@ class ExchangeContextIntegrationTest : AbstractIntegrationTest() {
 
         StepVerifier.create(flux)
             .expectNextMatches { exchangeContext.getUser("admin") != null }
+            .thenCancel()
+            .verify()
+    }
+
+    @Test
+    fun getCurrentUser() {
+        val mono = webClient.get()
+            .uri("current-user")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .retrieve()
+            .bodyToMono(User::class.java)
+
+        StepVerifier.create(mono)
+            .expectNextMatches { mono.block()!!.username == "admin" }
             .thenCancel()
             .verify()
     }
