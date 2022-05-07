@@ -5,6 +5,7 @@ import org.springframework.data.r2dbc.repository.Query
 import org.springframework.data.r2dbc.repository.R2dbcRepository
 import reactor.core.publisher.Flux
 import java.io.Serializable
+import java.time.OffsetDateTime
 import java.util.*
 
 interface ObjectRepository: R2dbcRepository<Jobject, UUID> {
@@ -15,5 +16,9 @@ interface ObjectRepository: R2dbcRepository<Jobject, UUID> {
 data class Jobject(
     var id: UUID? = null,
     var jtree: JsonNode,
-    var jfolderId: UUID? = null
+    var jfolderId: UUID? = null,
+    var createdAt: OffsetDateTime? = null,
+    var createdBy: UUID? = null,
+    var updatedAt: OffsetDateTime? = null,
+    var updatedBy: UUID? = null
 ) : Serializable

@@ -25,7 +25,6 @@ import java.util.*
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ImportAutoConfiguration(HazelcastCacheConfiguration::class)
 abstract class AbstractIntegrationTest : PostgresTestContainer() {
-
     @LocalServerPort
     protected var port = 55555
     protected val correctIp = "192.168.2.207"

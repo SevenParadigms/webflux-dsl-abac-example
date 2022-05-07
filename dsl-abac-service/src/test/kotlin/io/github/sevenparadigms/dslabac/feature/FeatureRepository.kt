@@ -55,6 +55,6 @@ data class Feature(
     var readonly: String? = null,
 
     // from application.yml
-    var customReadonly: Int? = null
+    var customReadonly: Int? = null,
 
 ) : AnySerializable // universal hazelcast serializable

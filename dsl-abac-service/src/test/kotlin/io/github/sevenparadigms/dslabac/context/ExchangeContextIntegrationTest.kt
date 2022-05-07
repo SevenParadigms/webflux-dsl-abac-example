@@ -1,11 +1,11 @@
 package io.github.sevenparadigms.dslabac.context
 
 import io.github.sevenparadigms.abac.Constants
+import io.github.sevenparadigms.abac.security.auth.data.UserPrincipal
 import io.github.sevenparadigms.dslabac.AbstractIntegrationTest
 import io.github.sevenparadigms.dslabac.data.Jobject
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
-import org.springframework.security.core.userdetails.User
 import reactor.test.StepVerifier
 
 class ExchangeContextIntegrationTest : AbstractIntegrationTest() {
@@ -105,14 +105,14 @@ class ExchangeContextIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun getCurrentUser() {
-        val mono = webClient.get()
-            .uri("current-user")
+        val userPrincipal = webClient.get()
+            .uri("/dsl-abac/current-user")
             .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
             .retrieve()
-            .bodyToMono(User::class.java)
+            .bodyToMono(UserPrincipal::class.java)
 
-        StepVerifier.create(mono)
-            .expectNextMatches { mono.block()!!.username == "admin" }
+        StepVerifier.create(userPrincipal)
+            .expectNextMatches { it.login == "admin" && it.id != null}
             .thenCancel()
             .verify()
     }

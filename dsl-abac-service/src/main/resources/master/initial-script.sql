@@ -24,8 +24,11 @@ CREATE TABLE jobject
     id         uuid                     DEFAULT uuid_generate_v1mc() NOT NULL,
     jfolder_id uuid                                                  NOT NULL REFERENCES jfolder (id),
     jtree      jsonb                                                 NOT NULL,
-    created_at timestamp with time zone DEFAULT timezone('utc'::text, CURRENT_TIMESTAMP),
     tsv        tsvector,
+    created_at timestamp with time zone NULL,
+    created_by uuid                     NULL,
+    updated_at timestamp with time zone NULL,
+    updated_by uuid                     NULL,
     PRIMARY KEY (id, jfolder_id)
 ) PARTITION BY LIST (jfolder_id);
 CREATE INDEX jobject_jtree_idx ON jobject USING gin (jtree jsonb_path_ops);

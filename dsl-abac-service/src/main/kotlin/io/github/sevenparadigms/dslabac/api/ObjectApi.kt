@@ -1,11 +1,11 @@
 package io.github.sevenparadigms.dslabac.api
 
 import com.fasterxml.jackson.databind.JsonNode
+import io.github.sevenparadigms.abac.security.auth.data.UserPrincipal
 import io.github.sevenparadigms.dslabac.data.Jfolder
 import io.github.sevenparadigms.dslabac.data.Jobject
 import org.springframework.data.r2dbc.repository.query.Dsl
 import org.springframework.http.MediaType
-import org.springframework.security.core.userdetails.User
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactivefeign.spring.config.ReactiveFeignClient
@@ -35,5 +35,5 @@ interface ObjectApi {
     fun context(): Flux<Any>
 
     @GetMapping("/current-user")
-    fun currentUser(): Mono<User>
+    fun currentUser(): Mono<UserPrincipal>
 }
