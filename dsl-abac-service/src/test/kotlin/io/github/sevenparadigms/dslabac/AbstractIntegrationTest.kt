@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.data.r2dbc.repository.security.AuthenticationIdentifierResolver
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.test.context.TestPropertySource
 import org.springframework.web.reactive.function.BodyInserters
@@ -25,6 +28,12 @@ import java.util.*
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ImportAutoConfiguration(HazelcastCacheConfiguration::class)
 abstract class AbstractIntegrationTest : PostgresTestContainer() {
+    @Configuration
+    class Initial {
+        @Bean
+        fun userIdResolver() = AuthenticationIdentifierResolver { Mono.just(UUID.randomUUID()) }
+    }
+
     @LocalServerPort
     protected var port = 55555
     protected val correctIp = "192.168.2.207"

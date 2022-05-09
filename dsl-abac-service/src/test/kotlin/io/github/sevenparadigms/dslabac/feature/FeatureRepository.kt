@@ -43,7 +43,7 @@ data class Feature(
     var customUpdate: OffsetDateTime? = null,
 
     @LastModifiedDate // r2dbc-commons
-    var attrNow: LocalDateTime? = null,
+    var attrUpdate: LocalDateTime? = null,
 
     @Equality // error if try set not equals of previous
     var equality: Int? = null,
@@ -57,4 +57,4 @@ data class Feature(
     // from application.yml
     var customReadonly: Int? = null,
 
-) : AnySerializable // universal hazelcast serializable
+    ) : AnySerializable // universal hazelcast serializable

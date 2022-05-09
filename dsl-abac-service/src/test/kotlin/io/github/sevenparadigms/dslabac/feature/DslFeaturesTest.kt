@@ -29,8 +29,6 @@ class DslFeaturesTest : AbstractIntegrationTest() {
                     assertNotNull(actual.createdAt)
                     assertNotNull(actual.createdAnn)
                     assertNotNull(actual.customCreate)
-                    assertNotNull(actual.customUpdate)
-                    assertNotNull(actual.attrNow)
                 }
             }
             .verifyComplete()
@@ -44,8 +42,9 @@ class DslFeaturesTest : AbstractIntegrationTest() {
                     assertEquals(actual.version, 2)
                     assertEquals(actual.customVersion, 2)
                     assertTrue(!DslUtils.compareDateTime(actual.versionAnn, previous.versionAnn))
-                    assertTrue(!DslUtils.compareDateTime(actual.customUpdate, previous.customUpdate))
-                    assertTrue(!DslUtils.compareDateTime(actual.attrNow, previous.attrNow))
+                    assertTrue(!DslUtils.compareDateTime(actual.attrUpdate, previous.attrUpdate))
+                    assertNotNull(actual.customUpdate)
+                    assertNotNull(actual.attrUpdate)
                 }
             }
             .verifyComplete()

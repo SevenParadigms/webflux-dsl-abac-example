@@ -227,7 +227,7 @@ CREATE TABLE feature
     created_ann         timestamp with time zone NULL,
     custom_create       timestamp                NULL,
     custom_update       timestamp with time zone NULL,
-    attr_now            timestamp                NULL,
+    attr_update         timestamp                NULL,
     equality            integer                  NULL,
     custom_equality     text                     NULL,
     readonly            text                     NULL,
