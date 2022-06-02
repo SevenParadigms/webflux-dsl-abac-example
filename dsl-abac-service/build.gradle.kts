@@ -43,6 +43,7 @@ liquibase {
 }
 
 dependencies {
+	implementation("org.springframework.boot:spring-boot-starter-validation:2.6.7")
 	implementation(libs.bundles.kotlin)
 	implementation(libs.bundles.service)
 	implementation(libs.bundles.feign)

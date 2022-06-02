@@ -116,4 +116,46 @@ class ExchangeContextIntegrationTest : AbstractIntegrationTest() {
             .thenCancel()
             .verify()
     }
+
+    @Test
+    fun getCurrentToken() {
+        val userPrincipal = webClient.get()
+            .uri("/dsl-abac/current-token")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .retrieve()
+            .bodyToMono(UserPrincipal::class.java)
+
+        StepVerifier.create(userPrincipal)
+            .expectNextMatches { it.login == "admin" }
+            .thenCancel()
+            .verify()
+    }
+
+    @Test
+    fun getCurrentPrincipal() {
+        val userPrincipal = webClient.get()
+            .uri("/dsl-abac/current-principal")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .retrieve()
+            .bodyToMono(UserPrincipal::class.java)
+
+        StepVerifier.create(userPrincipal)
+            .expectNextMatches { it.login == "admin" }
+            .thenCancel()
+            .verify()
+    }
+
+    @Test
+    fun currentAuthentication() {
+        val userPrincipal = webClient.get()
+            .uri("/dsl-abac/current-authentication")
+            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + adminToken)
+            .retrieve()
+            .bodyToMono(UserPrincipal::class.java)
+
+        StepVerifier.create(userPrincipal)
+            .expectNextMatches { it.login == "admin" && it.id != null }
+            .thenCancel()
+            .verify()
+    }
 }

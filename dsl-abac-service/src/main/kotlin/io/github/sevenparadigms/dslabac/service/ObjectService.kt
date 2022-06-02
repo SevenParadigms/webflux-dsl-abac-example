@@ -7,11 +7,17 @@ import io.github.sevenparadigms.dslabac.data.Jfolder
 import io.github.sevenparadigms.dslabac.data.Jobject
 import io.github.sevenparadigms.dslabac.data.ObjectRepository
 import org.sevenparadigms.kotlin.common.objectToJson
+import io.github.sevenparadigms.abac.security.auth.data.toPrincipal
 import org.springframework.data.r2dbc.repository.query.Dsl
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.toMono
+import java.security.Principal
 import java.util.*
 
 @Service
@@ -31,22 +37,15 @@ class ObjectService(
     @Transactional
     fun delete(dsl: Dsl) = objectRepository.delete(dsl)
 
-    fun listener(): Flux<JsonNode> = objectRepository.listener().map { it.parameter!!.objectToJson() }
+    fun listener(): Flux<JsonNode> = objectRepository.listener().map { it.payload.objectToJson() }
 
-    fun context(): Flux<Any> {
-        return Flux.zip(
-            ExchangeHolder.getHeaders(),
-            ExchangeHolder.getRemoteIp(),
-            ExchangeHolder.getRequest(),
-            ExchangeHolder.getToken(),
-            ExchangeHolder.getSession(),
-            ExchangeHolder.getResponse(),
-            ExchangeHolder.getUser()
-        )
-            .flatMap { Flux.fromIterable(listOf(it.t1, it.t2, it.t3, it.t4, it.t5, it.t6, it.t7)) }
-    }
-
-    fun current(): Mono<UserPrincipal> {
+    fun currentUser(): Mono<UserPrincipal> {
         return ExchangeHolder.getUserPrincipal()
     }
+
+    fun currentToken(token: UsernamePasswordAuthenticationToken): Mono<UserPrincipal> = (token.principal as User).toPrincipal().toMono()
+
+    fun currentPrincipal(principal: Principal): Mono<UserPrincipal> = currentToken(principal as UsernamePasswordAuthenticationToken)
+
+    fun currentAuthentication(authentication: Authentication): Mono<UserPrincipal> = authentication.toPrincipal().toMono()
 }
