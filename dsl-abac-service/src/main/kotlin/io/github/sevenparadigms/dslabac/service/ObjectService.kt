@@ -9,6 +9,7 @@ import io.github.sevenparadigms.dslabac.data.ObjectRepository
 import org.sevenparadigms.kotlin.common.objectToJson
 import io.github.sevenparadigms.abac.security.auth.data.toPrincipal
 import org.springframework.data.r2dbc.repository.query.Dsl
+import org.springframework.data.r2dbc.support.SqlField
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.User
@@ -29,7 +30,7 @@ class ObjectService(
 
     @Transactional(readOnly = true)
     fun findAll(jfolderId: UUID, dsl: Dsl): Flux<Jobject> =
-        objectRepository.findAll(dsl.equals("jfolderId", jfolderId))
+        objectRepository.findAll(dsl.equals(SqlField.jfolderId, jfolderId))
 
     @Transactional
     fun save(jobject: Jobject) = objectRepository.save(jobject)
